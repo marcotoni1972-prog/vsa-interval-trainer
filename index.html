@@ -111,7 +111,7 @@ function norm(s){if(!s)return"";return s.charAt(0).toUpperCase()+s.slice(1).toLo
 
 let state={
   started:false,
-  keyIdx:Math.floor(Math.random()*12),
+  keyIdx:0,
   row:0,col:0,
   feedback:null,correctNote:"",
   correct:0,total:0,finished:false,
@@ -209,11 +209,32 @@ function submitText(){
   state.correct+=ok?1:0;state.total+=1;render();
 }
 
+// Pesi per tonalità: più alterazioni = più frequente
+// Do=1, Reb=6, Re=3, Mib=4, Mi=5, Fa=2, Solb=7, Sol=2, Lab=5, La=4, Sib=3, Si=6
+const KEY_WEIGHTS=[1,6,3,4,5,2,7,2,5,4,3,6];
+function weightedKey(exclude){
+  const total=KEY_WEIGHTS.reduce((a,b,i)=>i===exclude?a:a+b,0);
+  let r=Math.random()*total;
+  for(let i=0;i<12;i++){if(i===exclude)continue;r-=KEY_WEIGHTS[i];if(r<=0)return i;}
+  return exclude===11?0:11;
+}
+
 function advanceAndAsk(){
   state.feedback=null;state.correctNote="";state.transcript="";
   const nc=state.col+1;
-  if(nc>=30){const nr=state.row+1;if(nr>=12){state.finished=true;render();speak("Tavola completata! "+state.correct+" su "+state.total+" corretti.");return;}else{state.row=nr;state.col=0;}}
-  else{state.col=nc;}
+  if(nc>=30){
+    const nr=state.row+1;
+    if(nr>=12){state.finished=true;render();speak("Tavola completata! "+state.correct+" su "+state.total+" corretti.");return;}
+    state.row=nr;state.col=0;
+    // Cambio tonalità ogni 3 righe
+    if(nr%3===0){
+      const newKey=weightedKey(state.keyIdx);
+      state.keyIdx=newKey;
+      render();
+      speak("Nuova tonalità: "+speakable(KEYS[newKey].name)+". Grado "+TABLE[nr][0],()=>{setTimeout(()=>startListening(),300);});
+      return;
+    }
+  } else{state.col=nc;}
   render();
   speak(String(TABLE[state.row][state.col]),()=>{setTimeout(()=>startListening(),300);});
 }
@@ -231,6 +252,7 @@ function toggleMode(){state.voiceMode=!state.voiceMode;render();}
 
 function startSession(){
   state.started=true;
+  state.keyIdx=weightedKey(-1);
   render();
   const key=KEYS[state.keyIdx];
   const num=TABLE[0][0];
@@ -243,7 +265,7 @@ function newSession(){
   if(recog)try{recog.stop();}catch(e){}
   state={
     started:true,
-    keyIdx:Math.floor(Math.random()*12),
+    keyIdx:weightedKey(-1),
     row:0,col:0,feedback:null,correctNote:"",
     correct:0,total:0,finished:false,
     showScale:state.showScale,voiceMode:state.voiceMode,
