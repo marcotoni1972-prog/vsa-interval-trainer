@@ -12,70 +12,75 @@
       --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
       --green-bg: #eaf3de; --green-text: #3b6d11; --green-border: rgba(63,120,20,0.3);
       --red-bg: #fcebeb; --red-text: #a32d2d; --red-border: rgba(180,40,40,0.3);
-      --blue-bg: #e6f1fb; --blue-text: #185fa5; --blue-border: rgba(24,95,165,0.4);
+      --blue-bg: #e6f1fb; --blue-text: #185fa5; --blue-border: rgba(55,138,221,0.4);
       --radius: 10px; --radius-lg: 14px;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #1c1c1a; --bg2: #252522; --bg3: #2e2e2b;
-        --text: #f0ede6; --text2: #a09e99; --text3: #6b6a66;
-        --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
-        --green-bg: #173404; --green-text: #c0dd97; --green-border: rgba(100,180,60,0.3);
-        --red-bg: #501313; --red-text: #f09595; --red-border: rgba(220,80,80,0.3);
-        --blue-bg: #042c53; --blue-text: #85b7eb; --blue-border: rgba(55,138,221,0.4);
+        --bg:#1c1c1a;--bg2:#252522;--bg3:#2e2e2b;
+        --text:#f0ede6;--text2:#a09e99;--text3:#6b6a66;
+        --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+        --green-bg:#173404;--green-text:#c0dd97;--green-border:rgba(100,180,60,0.3);
+        --red-bg:#501313;--red-text:#f09595;--red-border:rgba(220,80,80,0.3);
+        --blue-bg:#042c53;--blue-text:#85b7eb;--blue-border:rgba(55,138,221,0.4);
       }
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
-    .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.75rem; width: 100%; max-width: 460px; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
-    .label { font-size: 11px; color: var(--text2); letter-spacing:.07em; text-transform: uppercase; margin-bottom: 3px; }
-    .key-name { font-size: 22px; font-weight: 500; }
-    .prog { font-size: 13px; color: var(--text2); text-align: right; }
-    .progbar { height: 3px; background: var(--bg3); border-radius: 2px; margin-bottom: 1.75rem; overflow: hidden; }
-    .progbar-fill { height: 100%; background: #378add; border-radius: 2px; transition: width .3s; }
-    .scale-toggle { font-size: 12px; color: var(--text3); cursor: pointer; border: none; background: none; padding: 0; margin-bottom: 1rem; text-decoration: underline; text-underline-offset: 3px; }
-    .scale { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 1.5rem; }
-    .scale-cell { text-align: center; padding: 5px 2px; border-radius: 6px; background: var(--bg2); border: 0.5px solid var(--border); }
-    .scale-cell.active { background: var(--blue-bg); border-color: var(--blue-border); }
-    .scale-deg { font-size: 10px; color: var(--text2); }
-    .scale-note { font-size: 11px; font-weight: 500; }
-    .scale-cell.active .scale-deg, .scale-cell.active .scale-note { color: var(--blue-text); }
-    .number-area { text-align: center; margin: 1.5rem 0; }
-    .big-number { font-size: 108px; font-weight: 500; line-height: 1; font-family: "Courier New", monospace; transition: color .15s; }
-    .sub { font-size: 12px; color: var(--text3); margin-top: 6px; }
-    .mic-area { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 1rem; }
-    .mic-btn { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border2); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; }
-    .mic-btn:active { transform: scale(.95); }
-    .mic-btn.listening { border-color: #e24b4a; background: var(--red-bg); animation: pulse 1.2s ease-in-out infinite; }
-    .mic-btn svg { width: 32px; height: 32px; }
-    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(226,75,74,0.3); } 50% { box-shadow: 0 0 0 12px rgba(226,75,74,0); } }
-    .mic-status { font-size: 13px; color: var(--text2); min-height: 20px; text-align: center; }
-    .mic-transcript { font-size: 16px; font-weight: 500; color: var(--blue-text); min-height: 24px; text-align: center; }
-    .input-row { display: flex; gap: 8px; margin-bottom: 1rem; }
-    input[type="text"] { flex: 1; font-size: 16px; padding: 8px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); outline: none; }
-    input[type="text"]:focus { border-color: #378add; box-shadow: 0 0 0 2px rgba(55,138,221,.15); }
-    button { font-size: 14px; padding: 8px 18px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); cursor: pointer; transition: background .15s; }
-    button:hover { background: var(--bg2); }
-    button:active { transform: scale(.98); }
-    .btn-full { width: 100%; margin-bottom: 1rem; }
-    .feedback { padding: .85rem 1.1rem; border-radius: var(--radius-lg); margin-bottom: 1rem; border: 0.5px solid; }
-    .feedback.ok { background: var(--green-bg); border-color: var(--green-border); }
-    .feedback.ko { background: var(--red-bg); border-color: var(--red-border); }
-    .fb-title { font-weight: 500; margin-bottom: 3px; font-size: 15px; }
-    .fb-title.ok { color: var(--green-text); }
-    .fb-title.ko { color: var(--red-text); }
-    .fb-sub { font-size: 13px; color: var(--text2); }
-    .scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: .75rem; }
-    .score-card { background: var(--bg2); border-radius: var(--radius); padding: .65rem .75rem; text-align: center; }
-    .score-val { font-size: 20px; font-weight: 500; }
-    .mode-toggle { font-size: 12px; color: var(--text3); text-align: center; margin-bottom: .5rem; }
-    .mode-toggle button { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; padding: 0; }
-    .new-key { font-size: 12px; color: var(--text3); text-align: center; margin-top: .25rem; }
-    .new-key button { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; padding: 0; }
-    .done { text-align: center; padding: 3rem 1rem; }
-    .done-emoji { font-size: 48px; margin-bottom: .75rem; }
-    .done h2 { font-size: 22px; font-weight: 500; margin-bottom: .5rem; }
-    .done p { color: var(--text2); margin-bottom: 1.5rem; }
+    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg3); color:var(--text); min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:2rem 1rem; }
+    .card { background:var(--bg); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:2rem 1.75rem; width:100%; max-width:460px; }
+    .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.5rem; }
+    .label { font-size:11px; color:var(--text2); letter-spacing:.07em; text-transform:uppercase; margin-bottom:3px; }
+    .key-name { font-size:22px; font-weight:500; }
+    .prog { font-size:13px; color:var(--text2); text-align:right; }
+    .progbar { height:3px; background:var(--bg3); border-radius:2px; margin-bottom:1.75rem; overflow:hidden; }
+    .progbar-fill { height:100%; background:#378add; border-radius:2px; transition:width .3s; }
+    .scale-toggle { font-size:12px; color:var(--text3); cursor:pointer; border:none; background:none; padding:0; margin-bottom:1rem; text-decoration:underline; text-underline-offset:3px; }
+    .scale { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:1.5rem; }
+    .scale-cell { text-align:center; padding:5px 2px; border-radius:6px; background:var(--bg2); border:0.5px solid var(--border); }
+    .scale-cell.active { background:var(--blue-bg); border-color:var(--blue-border); }
+    .scale-deg { font-size:10px; color:var(--text2); }
+    .scale-note { font-size:11px; font-weight:500; }
+    .scale-cell.active .scale-deg,.scale-cell.active .scale-note { color:var(--blue-text); }
+    .number-area { text-align:center; margin:1.5rem 0; }
+    .big-number { font-size:108px; font-weight:500; line-height:1; font-family:"Courier New",monospace; transition:color .2s; }
+    .sub { font-size:12px; color:var(--text3); margin-top:6px; }
+
+    /* MIC */
+    .mic-area { display:flex; flex-direction:column; align-items:center; gap:14px; margin-bottom:1rem; }
+    .mic-btn { width:88px; height:88px; border-radius:50%; border:2px solid var(--border2); background:var(--bg); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; -webkit-tap-highlight-color:transparent; }
+    .mic-btn.listening { border-color:#e24b4a; background:var(--red-bg); animation:pulse 1.2s ease-in-out infinite; }
+    .mic-btn.waiting { border-color:#378add; background:var(--blue-bg); }
+    .mic-btn svg { width:34px; height:34px; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(226,75,74,0.35);}50%{box-shadow:0 0 0 14px rgba(226,75,74,0);} }
+    .mic-status { font-size:14px; color:var(--text2); min-height:22px; text-align:center; }
+    .mic-transcript { font-size:18px; font-weight:500; color:var(--blue-text); min-height:26px; text-align:center; }
+
+    /* FEEDBACK BANNER */
+    .feedback { padding:.85rem 1.1rem; border-radius:var(--radius-lg); margin-bottom:1rem; border:0.5px solid; }
+    .feedback.ok { background:var(--green-bg); border-color:var(--green-border); }
+    .feedback.ko { background:var(--red-bg); border-color:var(--red-border); }
+    .fb-title { font-weight:500; margin-bottom:3px; font-size:15px; }
+    .fb-title.ok { color:var(--green-text); }
+    .fb-title.ko { color:var(--red-text); }
+    .fb-sub { font-size:13px; color:var(--text2); }
+
+    /* FALLBACK TEXT */
+    .input-row { display:flex; gap:8px; margin-bottom:1rem; }
+    input[type="text"] { flex:1; font-size:16px; padding:8px 12px; border:0.5px solid var(--border2); border-radius:var(--radius); background:var(--bg); color:var(--text); outline:none; }
+    input[type="text"]:focus { border-color:#378add; box-shadow:0 0 0 2px rgba(55,138,221,.15); }
+    button { font-size:14px; padding:8px 18px; border:0.5px solid var(--border2); border-radius:var(--radius); background:var(--bg); color:var(--text); cursor:pointer; transition:background .15s; }
+    button:hover { background:var(--bg2); }
+    button:active { transform:scale(.98); }
+    .btn-full { width:100%; margin-bottom:1rem; }
+
+    .scores { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:.75rem; }
+    .score-card { background:var(--bg2); border-radius:var(--radius); padding:.65rem .75rem; text-align:center; }
+    .score-val { font-size:20px; font-weight:500; }
+    .bottom-links { display:flex; justify-content:space-between; margin-top:.75rem; }
+    .bottom-links button { background:none; border:none; color:var(--text3); cursor:pointer; font-size:12px; text-decoration:underline; text-underline-offset:3px; padding:0; }
+    .done { text-align:center; padding:3rem 1rem; }
+    .done-emoji { font-size:48px; margin-bottom:.75rem; }
+    .done h2 { font-size:22px; font-weight:500; margin-bottom:.5rem; }
+    .done p { color:var(--text2); margin-bottom:1.5rem; }
   </style>
 </head>
 <body>
@@ -84,29 +89,267 @@
 const TABLE=[[5,7,4,7,3,1,6,2,6,1,3,5,2,6,4,1,6,4,7,5,6,4,2,3,5,3,6,1,7,2],[2,1,7,3,7,4,5,1,6,7,3,2,4,3,4,3,5,4,5,2,6,3,1,6,1,6,4,5,7,2],[5,7,4,1,2,4,1,2,6,4,2,5,1,5,1,7,6,3,7,4,5,3,6,3,7,2,7,6,5,3],[4,7,5,7,5,1,2,7,2,5,4,6,5,7,6,2,1,3,4,3,1,3,2,6,1,4,1,4,6,3],[3,5,6,7,3,1,3,5,7,5,4,2,1,7,2,4,6,4,7,1,4,3,6,4,1,2,6,5,3,2],[3,7,5,2,6,5,2,6,3,5,3,4,7,6,7,4,5,1,6,2,1,6,1,4,2,5,7,4,3,1],[5,3,5,2,5,4,6,4,3,1,2,3,7,2,6,2,4,7,1,5,6,4,3,4,1,3,7,1,6,7],[5,7,6,5,2,1,7,3,1,4,6,7,3,2,7,5,7,3,4,1,3,4,6,2,5,6,5,1,4,2],[2,4,7,6,3,5,4,2,7,6,5,1,5,6,1,4,5,1,7,3,4,2,4,2,3,6,7,5,1,3],[3,7,2,7,4,5,1,3,6,7,1,4,1,6,3,2,5,4,6,7,5,4,3,1,5,2,3,6,2,4],[2,7,6,1,2,7,1,5,4,3,1,7,4,7,5,3,4,6,5,6,4,6,4,3,2,7,3,5,1,2],[3,1,3,6,7,4,6,2,4,1,5,3,1,2,3,6,2,3,7,6,4,5,7,4,6,1,5,2,5,7]];
 const KEYS=[{name:"Do",notes:["Do","Re","Mi","Fa","Sol","La","Si"]},{name:"Reb",notes:["Reb","Mib","Fa","Solb","Lab","Sib","Do"]},{name:"Re",notes:["Re","Mi","Fa#","Sol","La","Si","Do#"]},{name:"Mib",notes:["Mib","Fa","Sol","Lab","Sib","Do","Re"]},{name:"Mi",notes:["Mi","Fa#","Sol#","La","Si","Do#","Re#"]},{name:"Fa",notes:["Fa","Sol","La","Sib","Do","Re","Mi"]},{name:"Solb",notes:["Solb","Lab","Sib","Dob","Reb","Mib","Fa"]},{name:"Sol",notes:["Sol","La","Si","Do","Re","Mi","Fa#"]},{name:"Lab",notes:["Lab","Sib","Do","Reb","Mib","Fa","Sol"]},{name:"La",notes:["La","Si","Do#","Re","Mi","Fa#","Sol#"]},{name:"Sib",notes:["Sib","Do","Re","Mib","Fa","Sol","La"]},{name:"Si",notes:["Si","Do#","Re#","Mi","Fa#","Sol#","La#"]}];
 const ALIASES={"do":"Do","dò":"Do","re":"Re","mi":"Mi","fa":"Fa","sol":"Sol","so":"Sol","la":"La","si":"Si","reb":"Reb","re bemolle":"Reb","mib":"Mib","mi bemolle":"Mib","solb":"Solb","sol bemolle":"Solb","lab":"Lab","la bemolle":"Lab","sib":"Sib","si bemolle":"Sib","dob":"Dob","do bemolle":"Dob","fa#":"Fa#","fa diesis":"Fa#","do#":"Do#","do diesis":"Do#","sol#":"Sol#","sol diesis":"Sol#","re#":"Re#","re diesis":"Re#","la#":"La#","la diesis":"La#"};
-function normalizeVoice(s){if(!s)return"";const low=s.trim().toLowerCase();if(ALIASES[low])return ALIASES[low];const first=low.split(" ")[0];if(ALIASES[first])return ALIASES[first];return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
+
+function normalizeVoice(s){
+  if(!s)return"";
+  const low=s.trim().toLowerCase();
+  if(ALIASES[low])return ALIASES[low];
+  const first=low.split(" ")[0];
+  if(ALIASES[first])return ALIASES[first];
+  return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();
+}
 function norm(s){if(!s)return"";return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
-let state={keyIdx:Math.floor(Math.random()*12),row:0,col:0,feedback:null,correctNote:"",correct:0,total:0,finished:false,showScale:false,voiceMode:true,listening:false,transcript:"",micStatus:"Premi il microfono per rispondere"};
-function speak(text,onEnd){if(!window.speechSynthesis){if(onEnd)onEnd();return;}window.speechSynthesis.cancel();const utt=new SpeechSynthesisUtterance(text);utt.lang="it-IT";utt.rate=0.95;if(onEnd)utt.onend=onEnd;window.speechSynthesis.speak(utt);}
+
+let state={
+  keyIdx:Math.floor(Math.random()*12),
+  row:0,col:0,
+  feedback:null,correctNote:"",
+  correct:0,total:0,
+  finished:false,
+  showScale:false,
+  voiceMode:true,
+  listening:false,
+  transcript:"",
+  micStatus:"Premi il microfono per rispondere"
+};
+
+// ── SPEECH SYNTHESIS ──
+function speak(text, onEnd){
+  if(!window.speechSynthesis){if(onEnd)onEnd();return;}
+  window.speechSynthesis.cancel();
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang="it-IT"; utt.rate=0.95;
+  if(onEnd)utt.onend=onEnd;
+  window.speechSynthesis.speak(utt);
+}
+
+// ── SPEECH RECOGNITION ──
 let recog=null;
-function setupRecog(){const SRec=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SRec)return null;const r=new SRec();r.lang="it-IT";r.interimResults=true;r.maxAlternatives=3;r.onresult=(e)=>{let interim="",final="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)final+=t;else interim+=t;}state.transcript=final||interim;updateMicUI();if(final){state.listening=false;submitVoice(final);}};r.onerror=(e)=>{state.listening=false;state.micStatus=e.error==="no-speech"?"Non ho sentito nulla, riprova":"Errore: "+e.error;state.transcript="";updateMicUI();};r.onend=()=>{if(state.listening){state.listening=false;updateMicUI();}};return r;}
-function updateMicUI(){const btn=document.getElementById("mic-btn");const status=document.getElementById("mic-status");const trans=document.getElementById("mic-transcript");if(btn)btn.className="mic-btn"+(state.listening?" listening":"");if(status)status.textContent=state.micStatus;if(trans)trans.textContent=state.transcript;}
-function toggleMic(){if(state.feedback)return;if(state.listening){recog&&recog.stop();state.listening=false;state.micStatus="Premi il microfono per rispondere";updateMicUI();return;}if(!recog)recog=setupRecog();if(!recog){state.micStatus="Microfono non supportato su questo browser";updateMicUI();return;}state.listening=true;state.transcript="";state.micStatus="In ascolto…";updateMicUI();try{recog.start();}catch(e){recog=setupRecog();try{recog.start();}catch(e2){}}}
-function submitVoice(text){const answer=normalizeVoice(text);const correct=KEYS[state.keyIdx].notes[TABLE[state.row][state.col]-1];const ok=answer===correct;state.feedback=ok?"correct":"wrong";state.correctNote=correct;state.correct+=ok?1:0;state.total+=1;state.micStatus="Premi il microfono per rispondere";speak(ok?"Esatto! "+correct:"Sbagliato. La risposta è "+correct);render();}
-function submitText(){const inp=document.getElementById("ans");if(!inp)return;const answer=norm(inp.value.trim());const correct=KEYS[state.keyIdx].notes[TABLE[state.row][state.col]-1];const ok=answer===correct;state.feedback=ok?"correct":"wrong";state.correctNote=correct;state.correct+=ok?1:0;state.total+=1;render();}
-function next(){state.feedback=null;state.correctNote="";state.transcript="";const nextCol=state.col+1;if(nextCol>=30){const nextRow=state.row+1;if(nextRow>=12){state.finished=true;render();return;}else{state.row=nextRow;state.col=0;}}else{state.col=nextCol;}render();speak(String(TABLE[state.row][state.col]));}
+function setupRecog(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return null;
+  const r=new SR();
+  r.lang="it-IT"; r.interimResults=true; r.maxAlternatives=3;
+  r.onresult=(e)=>{
+    let interim="",final="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal)final+=t; else interim+=t;
+    }
+    state.transcript=final||interim;
+    updateMicUI();
+    if(final){state.listening=false;submitVoice(final);}
+  };
+  r.onerror=(e)=>{
+    state.listening=false;
+    state.micStatus=e.error==="no-speech"?"Non ho sentito nulla, riprova":"Errore: "+e.error;
+    state.transcript="";
+    updateMicUI();
+  };
+  r.onend=()=>{if(state.listening){state.listening=false;updateMicUI();}};
+  return r;
+}
+
+function updateMicUI(){
+  const btn=document.getElementById("mic-btn");
+  const status=document.getElementById("mic-status");
+  const trans=document.getElementById("mic-transcript");
+  if(btn)btn.className="mic-btn"+(state.listening?" listening":state.feedback?" waiting":"");
+  if(status)status.textContent=state.micStatus;
+  if(trans)trans.textContent=state.transcript;
+}
+
+function startListening(){
+  if(!recog)recog=setupRecog();
+  if(!recog){state.micStatus="Microfono non supportato su questo browser";updateMicUI();return;}
+  state.listening=true;
+  state.transcript="";
+  state.micStatus="In ascolto…";
+  updateMicUI();
+  try{recog.start();}catch(e){recog=setupRecog();try{recog.start();}catch(e2){}}
+}
+
+function toggleMic(){
+  if(state.listening){
+    recog&&recog.stop();
+    state.listening=false;
+    state.micStatus="Premi il microfono per rispondere";
+    updateMicUI();
+    return;
+  }
+  startListening();
+}
+
+// Dopo feedback, pausa e poi avanza automaticamente alla prossima domanda
+function afterFeedback(isCorrect, correctNote){
+  const msg = isCorrect ? "Esatto! "+correctNote : "Sbagliato. La risposta è "+correctNote;
+  // Parla il feedback, poi avanza e legge il prossimo numero, poi attiva mic
+  speak(msg, ()=>{
+    advanceQuestion();
+    const num=TABLE[state.row][state.col];
+    speak(String(num), ()=>{
+      // piccola pausa poi ascolta
+      setTimeout(()=>startListening(), 400);
+    });
+  });
+}
+
+function submitVoice(text){
+  const answer=normalizeVoice(text);
+  const correct=KEYS[state.keyIdx].notes[TABLE[state.row][state.col]-1];
+  const ok=answer===correct;
+  state.feedback=ok?"correct":"wrong";
+  state.correctNote=correct;
+  state.correct+=ok?1:0;
+  state.total+=1;
+  state.micStatus="";
+  render();
+  afterFeedback(ok, correct);
+}
+
+function submitText(){
+  const inp=document.getElementById("ans");
+  if(!inp)return;
+  const answer=norm(inp.value.trim());
+  if(!answer)return;
+  const correct=KEYS[state.keyIdx].notes[TABLE[state.row][state.col]-1];
+  const ok=answer===correct;
+  state.feedback=ok?"correct":"wrong";
+  state.correctNote=correct;
+  state.correct+=ok?1:0;
+  state.total+=1;
+  render();
+}
+
+function advanceQuestion(){
+  state.feedback=null;
+  state.correctNote="";
+  state.transcript="";
+  const nextCol=state.col+1;
+  if(nextCol>=30){
+    const nextRow=state.row+1;
+    if(nextRow>=12){state.finished=true;render();speak("Tavola completata! "+state.correct+" su "+state.total+" corretti.");return;}
+    else{state.row=nextRow;state.col=0;}
+  } else {state.col=nextCol;}
+  render();
+}
+
+function nextManual(){
+  advanceQuestion();
+  if(!state.finished){
+    const num=TABLE[state.row][state.col];
+    speak(String(num));
+  }
+}
+
 function toggleScale(){state.showScale=!state.showScale;render();}
 function toggleMode(){state.voiceMode=!state.voiceMode;render();}
-function newSession(){state={keyIdx:Math.floor(Math.random()*12),row:0,col:0,feedback:null,correctNote:"",correct:0,total:0,finished:false,showScale:state.showScale,voiceMode:state.voiceMode,listening:false,transcript:"",micStatus:"Premi il microfono per rispondere"};render();speak("Tonalità "+KEYS[state.keyIdx].name+". Grado "+TABLE[0][0]);}
-function render(){const{keyIdx,row,col,feedback,correctNote,correct,total,finished,showScale,voiceMode}=state;const key=KEYS[keyIdx];const num=TABLE[row][col];const pos=row*30+col+1;const pct=Math.round(pos/360*100);const app=document.getElementById("app");if(finished){const pct2=total>0?Math.round(correct/total*100):0;app.innerHTML=`<div class="done"><div class="done-emoji">🎵</div><h2>Tavola completata!</h2><p>${correct} / ${total} corretti &middot; ${pct2}%</p><button onclick="newSession()">Nuova sessione &rarr;</button></div>`;speak("Tavola completata! "+correct+" su "+total+" corretti.");return;}
-const bigColor=feedback==="correct"?"var(--green-text)":feedback==="wrong"?"var(--red-text)":"var(--text)";
-const scaleHtml=showScale?`<div class="scale">${key.notes.map((n,i)=>`<div class="scale-cell${(i+1)===num?" active":""}"><div class="scale-deg">${i+1}</div><div class="scale-note">${n}</div></div>`).join("")}</div>`:"";
-let inputHtml="";
-if(!feedback){if(voiceMode){inputHtml=`<div class="mic-area"><button class="mic-btn${state.listening?" listening":""}" id="mic-btn" onclick="toggleMic()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button><div class="mic-transcript" id="mic-transcript">${state.transcript}</div><div class="mic-status" id="mic-status">${state.micStatus}</div></div>`;}else{inputHtml=`<div class="input-row"><input id="ans" type="text" placeholder="es. Sol, Sib, Fa#…" autocomplete="off" autocorrect="off" spellcheck="false"/><button onclick="submitText()">OK</button></div>`;}}else{inputHtml=`<div class="feedback ${feedback==="correct"?"ok":"ko"}"><div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div><div class="fb-sub">${feedback==="correct"?correctNote+" è corretto.":"La risposta corretta è <strong>"+correctNote+"</strong>."}</div></div><button class="btn-full" onclick="next()">Avanti &rarr;</button>`;}
-app.innerHTML=`<div class="header"><div><div class="label">Tonalità</div><div class="key-name">${key.name} maggiore</div></div><div><div class="label" style="text-align:right">Progresso</div><div class="prog">${pos} / 360</div></div></div><div class="progbar"><div class="progbar-fill" style="width:${pct}%"></div></div><button class="scale-toggle" onclick="toggleScale()">${showScale?"Nascondi scala":"Mostra scala"}</button>${scaleHtml}<div class="number-area"><div class="label">Grado</div><div class="big-number" style="color:${bigColor}">${num}</div><div class="sub">Riga ${row+1} &middot; Col ${col+1}</div></div>${inputHtml}<div class="scores"><div class="score-card"><div class="label">Corretti</div><div class="score-val" style="color:var(--green-text)">${correct}</div></div><div class="score-card"><div class="label">Sbagliati</div><div class="score-val" style="color:var(--red-text)">${total-correct}</div></div><div class="score-card"><div class="label">% corretti</div><div class="score-val">${total>0?Math.round(correct/total*100)+"%":"—"}</div></div></div><div class="mode-toggle"><button onclick="toggleMode()">${voiceMode?"Passa a tastiera":"Passa a microfono"}</button></div><div class="new-key"><button onclick="newSession()">Cambia tonalità</button></div>`;
-if(!voiceMode&&!feedback){const inp=document.getElementById("ans");if(inp){inp.focus();inp.addEventListener("keydown",e=>{if(e.key==="Enter")submitText();});}}}
+
+function newSession(){
+  if(recog)try{recog.stop();}catch(e){}
+  state={
+    keyIdx:Math.floor(Math.random()*12),
+    row:0,col:0,
+    feedback:null,correctNote:"",
+    correct:0,total:0,finished:false,
+    showScale:state.showScale,voiceMode:state.voiceMode,
+    listening:false,transcript:"",
+    micStatus:"Premi il microfono per rispondere"
+  };
+  render();
+  const key=KEYS[state.keyIdx];
+  const num=TABLE[0][0];
+  speak("Tonalità "+key.name+". Grado "+num, ()=>{
+    if(state.voiceMode) setTimeout(()=>startListening(),300);
+  });
+}
+
+function render(){
+  const{keyIdx,row,col,feedback,correctNote,correct,total,finished,showScale,voiceMode}=state;
+  const key=KEYS[keyIdx];
+  const num=TABLE[row][col];
+  const pos=row*30+col+1;
+  const pct=Math.round(pos/360*100);
+  const app=document.getElementById("app");
+
+  if(finished){
+    const pct2=total>0?Math.round(correct/total*100):0;
+    app.innerHTML=`<div class="done"><div class="done-emoji">🎵</div><h2>Tavola completata!</h2><p>${correct} / ${total} corretti &middot; ${pct2}%</p><button onclick="newSession()">Nuova sessione &rarr;</button></div>`;
+    return;
+  }
+
+  const bigColor=feedback==="correct"?"var(--green-text)":feedback==="wrong"?"var(--red-text)":"var(--text)";
+  const scaleHtml=showScale?`<div class="scale">${key.notes.map((n,i)=>`<div class="scale-cell${(i+1)===num?" active":""}"><div class="scale-deg">${i+1}</div><div class="scale-note">${n}</div></div>`).join("")}</div>`:"";
+
+  let inputHtml="";
+  if(voiceMode){
+    const micClass="mic-btn"+(state.listening?" listening":feedback?" waiting":"");
+    inputHtml=`
+      <div class="mic-area">
+        <button class="${micClass}" id="mic-btn" onclick="toggleMic()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"/>
+            <path d="M5 10a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+            <line x1="9" y1="21" x2="15" y2="21"/>
+          </svg>
+        </button>
+        <div class="mic-transcript" id="mic-transcript">${state.transcript}</div>
+        <div class="mic-status" id="mic-status">${state.micStatus}</div>
+      </div>`;
+    if(feedback){
+      inputHtml+=`<div class="feedback ${feedback==="correct"?"ok":"ko"}">
+        <div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div>
+        <div class="fb-sub">${feedback==="correct"?correctNote+" è corretto.":"La risposta corretta è <strong>"+correctNote+"</strong>."}</div>
+      </div>`;
+    }
+  } else {
+    if(!feedback){
+      inputHtml=`<div class="input-row"><input id="ans" type="text" placeholder="es. Sol, Sib, Fa#…" autocomplete="off" autocorrect="off" spellcheck="false"/><button onclick="submitText()">OK</button></div>`;
+    } else {
+      inputHtml=`<div class="feedback ${feedback==="correct"?"ok":"ko"}">
+        <div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div>
+        <div class="fb-sub">${feedback==="correct"?correctNote+" è corretto.":"La risposta corretta è <strong>"+correctNote+"</strong>."}</div>
+      </div>
+      <button class="btn-full" onclick="nextManual()">Avanti &rarr;</button>`;
+    }
+  }
+
+  app.innerHTML=`
+    <div class="header">
+      <div><div class="label">Tonalità</div><div class="key-name">${key.name} maggiore</div></div>
+      <div><div class="label" style="text-align:right">Progresso</div><div class="prog">${pos} / 360</div></div>
+    </div>
+    <div class="progbar"><div class="progbar-fill" style="width:${pct}%"></div></div>
+    <button class="scale-toggle" onclick="toggleScale()">${showScale?"Nascondi scala":"Mostra scala"}</button>
+    ${scaleHtml}
+    <div class="number-area">
+      <div class="label">Grado</div>
+      <div class="big-number" style="color:${bigColor}">${num}</div>
+      <div class="sub">Riga ${row+1} &middot; Col ${col+1}</div>
+    </div>
+    ${inputHtml}
+    <div class="scores">
+      <div class="score-card"><div class="label">Corretti</div><div class="score-val" style="color:var(--green-text)">${correct}</div></div>
+      <div class="score-card"><div class="label">Sbagliati</div><div class="score-val" style="color:var(--red-text)">${total-correct}</div></div>
+      <div class="score-card"><div class="label">% corretti</div><div class="score-val">${total>0?Math.round(correct/total*100)+"%":"—"}</div></div>
+    </div>
+    <div class="bottom-links">
+      <button onclick="toggleMode()">${voiceMode?"Passa a tastiera":"Passa a microfono"}</button>
+      <button onclick="newSession()">Cambia tonalità</button>
+    </div>`;
+
+  if(!voiceMode&&!feedback){
+    const inp=document.getElementById("ans");
+    if(inp){inp.focus();inp.addEventListener("keydown",e=>{if(e.key==="Enter")submitText();});}
+  }
+}
+
+// AVVIO
 render();
-speak("Tonalità "+KEYS[state.keyIdx].name+". Grado "+TABLE[state.row][state.col]);
+speak("Tonalità "+KEYS[state.keyIdx].name+". Grado "+TABLE[0][0], ()=>{
+  if(state.voiceMode) setTimeout(()=>startListening(),300);
+});
 </script>
 </body>
 </html>
