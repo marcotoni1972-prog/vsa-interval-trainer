@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VSA — Allenamento Musicale</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#ffffff;--bg2:#f5f4f0;--bg3:#eeece7;
+      --text:#1a1a18;--text2:#6b6a66;--text3:#9e9c97;
+      --border:rgba(0,0,0,0.12);
+      --accent:#7c4dff;--accent-bg:#f0ebff;
+      --radius:12px;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#1c1c1a;--bg2:#252522;--bg3:#2e2e2b;
+        --text:#f0ede6;--text2:#a09e99;--text3:#6b6a66;
+        --border:rgba(255,255,255,0.1);
+        --accent:#a47fff;--accent-bg:#2a1f4a;
+      }
+    }
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg3);color:var(--text);
+      min-height:100vh;display:flex;align-items:center;
+      justify-content:center;padding:2rem 1rem;
+    }
+    .card{
+      background:var(--bg);border:0.5px solid var(--border);
+      border-radius:16px;padding:2.5rem 2rem;
+      width:100%;max-width:400px;
+      box-shadow:0 2px 16px rgba(0,0,0,0.07);
+      text-align:center;
+    }
+    .logo{font-size:36px;margin-bottom:1rem;}
+    h1{font-size:22px;font-weight:800;margin-bottom:.3rem;}
+    .sub{font-size:13px;color:var(--text3);margin-bottom:2.5rem;}
+    .app-link{
+      display:block;text-decoration:none;
+      background:var(--bg2);border:0.5px solid var(--border);
+      border-radius:var(--radius);padding:1.25rem 1.5rem;
+      margin-bottom:.9rem;text-align:left;
+      transition:border-color .15s,background .15s;
+    }
+    .app-link:hover{border-color:var(--accent);background:var(--accent-bg);}
+    .app-link .app-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:.2rem;}
+    .app-link .app-desc{font-size:12px;color:var(--text3);}
+    .app-link .app-icon{font-size:24px;float:right;margin-top:2px;}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">🎵</div>
+  <h1>VSA — Allenamento</h1>
+  <p class="sub">Scegli la tavola da studiare</p>
+
+  <a class="app-link" href="index.html">
+    <span class="app-icon">🎼</span>
+    <div class="app-title">Intervalli Naturali</div>
+    <div class="app-desc">12 righe × 30 colonne — gradi 1–7</div>
+  </a>
+
+  <a class="app-link" href="alterati.html">
+    <span class="app-icon">🎹</span>
+    <div class="app-title">Intervalli Alterati</div>
+    <div class="app-desc">12 righe × 20 colonne — 2♭ 2♯ 3♭ 4♯ 5♭ 5♯ 6♭ 7♭</div>
+  </a>
+</div>
+</body>
+</html>
