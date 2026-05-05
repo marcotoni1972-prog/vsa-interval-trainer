@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VSA — Tavola 2-5-1</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#ffffff;--bg2:#f5f4f0;--bg3:#eeece7;
+      --text:#1a1a18;--text2:#6b6a66;--text3:#9e9c97;
+      --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
+      --blue-bg:#e6f1fb;--blue-text:#185fa5;--blue-border:rgba(55,138,221,0.35);
+      --gold-bg:#fdf3dc;--gold-text:#8a5e00;--gold-border:rgba(200,150,0,0.3);
+      --dim-bg:#f3f0f8;--dim-text:#5a3d8a;--dim-border:rgba(120,80,200,0.25);
+      --radius:10px;--radius-lg:14px;
+    }
+    @media(prefers-color-scheme:dark){:root{
+      --bg:#1c1c1a;--bg2:#252522;--bg3:#2e2e2b;
+      --text:#f0ede6;--text2:#a09e99;--text3:#6b6a66;
+      --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
+      --blue-bg:#042c53;--blue-text:#85b7eb;--blue-border:rgba(55,138,221,0.35);
+      --gold-bg:#3a2a00;--gold-text:#e8c060;--gold-border:rgba(200,150,0,0.3);
+      --dim-bg:#2a1f40;--dim-text:#b899f5;--dim-border:rgba(150,100,240,0.3);
+    }}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg3);color:var(--text);
+      min-height:100vh;display:flex;align-items:flex-start;
+      justify-content:center;padding:1.5rem 1rem 3rem;
+    }
+    .card{
+      background:var(--bg);border:0.5px solid var(--border);
+      border-radius:var(--radius-lg);padding:1.5rem 1.25rem;
+      width:100%;max-width:500px;
+    }
+
+    /* Header */
+    .header{margin-bottom:1.25rem}
+    .title{font-size:13px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:2px}
+    .subtitle{font-size:20px;font-weight:700;color:var(--text)}
+
+    /* Key grid */
+    .key-grid{
+      display:grid;grid-template-columns:repeat(6,1fr);
+      gap:5px;margin-bottom:1.25rem;
+    }
+    .key-btn{
+      font-size:13px;font-weight:600;padding:7px 4px;
+      border:0.5px solid var(--border2);border-radius:8px;
+      background:var(--bg2);color:var(--text2);
+      cursor:pointer;text-align:center;transition:all .15s;
+    }
+    .key-btn:hover{background:var(--bg3);color:var(--text)}
+    .key-btn.active{
+      background:var(--blue-bg);color:var(--blue-text);
+      border-color:var(--blue-border);
+    }
+
+    /* Table */
+    .tbl-wrap{overflow-x:auto;margin-bottom:1rem}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    thead th{
+      font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+      color:var(--text3);padding:6px 8px;text-align:left;
+      border-bottom:1.5px solid var(--border2);
+    }
+    thead th:first-child{width:36px}
+    tbody tr{border-bottom:0.5px solid var(--border)}
+    tbody tr:last-child{border-bottom:none}
+    tbody td{padding:9px 8px;vertical-align:middle}
+    tbody td:first-child{
+      font-size:11px;font-weight:700;color:var(--text3);
+      letter-spacing:.04em;text-align:center;
+    }
+
+    /* Row colors */
+    tr.row-maj  td{background:var(--bg)}
+    tr.row-dom  td{background:var(--gold-bg)}
+    tr.row-dom  td{color:var(--gold-text)}
+    tr.row-dom  td:first-child{color:var(--gold-text)}
+    tr.row-dim  td{background:var(--dim-bg)}
+    tr.row-dim  td{color:var(--dim-text)}
+    tr.row-dim  td:first-child{color:var(--dim-text)}
+
+    /* Chord cells */
+    .chord{
+      display:inline-block;
+      font-weight:600;font-size:14px;letter-spacing:-.01em;
+      white-space:nowrap;
+    }
+    .chord .acc{font-size:11px;vertical-align:super;line-height:0}
+    .chord .qual{font-size:11px;font-weight:500;color:var(--text2)}
+    tr.row-dom .chord .qual{color:var(--gold-text);opacity:.8}
+    tr.row-dim .chord .qual{color:var(--dim-text);opacity:.8}
+
+    /* Arrow between chords */
+    .arrow{color:var(--text3);font-size:11px;margin:0 3px}
+
+    /* Legend */
+    .legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+    .leg{font-size:11px;padding:3px 8px;border-radius:20px;border:0.5px solid}
+    .leg-maj{background:var(--bg2);color:var(--text2);border-color:var(--border2)}
+    .leg-dom{background:var(--gold-bg);color:var(--gold-text);border-color:var(--gold-border)}
+    .leg-dim{background:var(--dim-bg);color:var(--dim-text);border-color:var(--dim-border)}
+
+    /* Back link */
+    .back{font-size:12px;color:var(--text3);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+    .back:hover{color:var(--text)}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="title">VSA — Tavola di riferimento</div>
+    <div class="subtitle">Progressioni 2–5–1</div>
+  </div>
+
+  <div class="key-grid" id="keyGrid"></div>
+
+  <div class="legend">
+    <span class="leg leg-maj">maj7 / m7 — accordi diatonici</span>
+    <span class="leg leg-dom">7 — dominante</span>
+    <span class="leg leg-dim">m7♭5 — semidiminuito</span>
+  </div>
+
+  <div class="tbl-wrap">
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th>°</th>
+          <th>II</th>
+          <th>V</th>
+          <th>I</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <a class="back" href="menu.html">← Menu principale</a>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+// Ogni riga: [grado, ii, v, i]
+// Qualità: maj7, m7, m7b5, 7
+const KEYS_DATA = [
+  { name:'Do', rows:[
+    ['I',   'Rem7',     'Sol7',   'Domaj7'],
+    ['II',  'Mim7b5',   'La7',    'Rem7'],
+    ['III', 'Fa#m7b5',  'Si7',    'Mim7'],
+    ['IV',  'Solm7',    'Do7',    'Famaj7'],
+    ['V',   'Lam7',     'Re7',    'Sol7'],
+    ['VI',  'Sim7b5',   'Mi7',    'Lam7'],
+    ['VII', 'Do#m7b5',  'Fa#7',   'Sim7b5'],
+  ]},
+  { name:'Reb', rows:[
+    ['I',   'Mibm7',    'Lab7',   'Rebmaj7'],
+    ['II',  'Fam7b5',   'Sib7',   'Mibm7'],
+    ['III', 'Solm7b5',  'Do7',    'Fam7'],
+    ['IV',  'Labm7',    'Reb7',   'Solbmaj7'],
+    ['V',   'Sibm7',    'Mib7',   'Lab7'],
+    ['VI',  'Dom7b5',   'Fa7',    'Sibm7'],
+    ['VII', 'Rem7b5',   'Sol7',   'Dom7b5'],
+  ]},
+  { name:'Re', rows:[
+    ['I',   'Mim7',     'La7',    'Remaj7'],
+    ['II',  'Fa#m7b5',  'Si7',    'Mim7'],
+    ['III', 'Sol#m7b5', 'Do#7',   'Fa#m7'],
+    ['IV',  'Lam7',     'Re7',    'Solmaj7'],
+    ['V',   'Sim7',     'Mi7',    'La7'],
+    ['VI',  'Do#m7b5',  'Fa#7',   'Sim7'],
+    ['VII', 'Re#m7b5',  'Sol#7',  'Do#m7b5'],
+  ]},
+  { name:'Mib', rows:[
+    ['I',   'Fam7',     'Sib7',   'Mibmaj7'],
+    ['II',  'Solm7b5',  'Do7',    'Fam7'],
+    ['III', 'Lam7b5',   'Re7',    'Solm7'],
+    ['IV',  'Sibm7',    'Mib7',   'Labmaj7'],
+    ['V',   'Dom7',     'Fa7',    'Sib7'],
+    ['VI',  'Rem7b5',   'Sol7',   'Dom7'],
+    ['VII', 'Mim7b5',   'La7',    'Rem7b5'],
+  ]},
+  { name:'Mi', rows:[
+    ['I',   'Fa#m7',    'Si7',    'Mimaj7'],
+    ['II',  'Sol#m7b5', 'Do#7',   'Fa#m7'],
+    ['III', 'La#m7b5',  'Re#7',   'Sol#m7'],
+    ['IV',  'Sim7',     'Mi7',    'Lamaj7'],
+    ['V',   'Do#m7',    'Fa#7',   'Si7'],
+    ['VI',  'Re#m7b5',  'Sol#7',  'Do#m7'],
+    ['VII', 'Fam7b5',   'La#7',   'Re#m7b5'],
+  ]},
+  { name:'Fa', rows:[
+    ['I',   'Solm7',    'Do7',    'Famaj7'],
+    ['II',  'Lam7b5',   'Re7',    'Solm7'],
+    ['III', 'Sim7b5',   'Mi7',    'Lam7'],
+    ['IV',  'Dom7',     'Fa7',    'Sibmaj7'],
+    ['V',   'Rem7',     'Sol7',   'Do7'],
+    ['VI',  'Mim7b5',   'La7',    'Rem7'],
+    ['VII', 'Fa#m7b5',  'Si7',    'Mim7b5'],
+  ]},
+  { name:'Solb', rows:[
+    ['I',   'Labm7',    'Reb7',   'Solbmaj7'],
+    ['II',  'Sibm7b5',  'Mib7',   'Labm7'],
+    ['III', 'Dom7b5',   'Fa7',    'Sibm7'],
+    ['IV',  'Rebm7',    'Solb7',  'Dobmaj7'],
+    ['V',   'Mibm7',    'Lab7',   'Reb7'],
+    ['VI',  'Fam7b5',   'Sib7',   'Mibm7'],
+    ['VII', 'Solm7b5',  'Do7',    'Fam7b5'],
+  ]},
+  { name:'Sol', rows:[
+    ['I',   'Lam7',     'Re7',    'Solmaj7'],
+    ['II',  'Sim7b5',   'Mi7',    'Lam7'],
+    ['III', 'Do#m7b5',  'Fa#7',   'Sim7'],
+    ['IV',  'Rem7',     'Sol7',   'Domaj7'],
+    ['V',   'Mim7',     'La7',    'Re7'],
+    ['VI',  'Fa#m7b5',  'Si7',    'Mim7'],
+    ['VII', 'Sol#m7b5', 'Do#7',   'Fa#m7b5'],
+  ]},
+  { name:'Lab', rows:[
+    ['I',   'Sibm7',    'Mib7',   'Labmaj7'],
+    ['II',  'Dom7b5',   'Fa7',    'Sibm7'],
+    ['III', 'Rem7b5',   'Sol7',   'Dom7'],
+    ['IV',  'Mibm7',    'Lab7',   'Rebmaj7'],
+    ['V',   'Fam7',     'Sib7',   'Mib7'],
+    ['VI',  'Solm7b5',  'Do7',    'Fam7'],
+    ['VII', 'Lam7b5',   'Re7',    'Solm7b5'],
+  ]},
+  { name:'La', rows:[
+    ['I',   'Sim7',     'Mi7',    'Lamaj7'],
+    ['II',  'Do#m7b5',  'Fa#7',   'Sim7'],
+    ['III', 'Re#m7b5',  'Sol#7',  'Do#m7'],
+    ['IV',  'Mim7',     'La7',    'Remaj7'],
+    ['V',   'Fa#m7',    'Si7',    'Mi7'],
+    ['VI',  'Sol#m7b5', 'Do#7',   'Fa#m7'],
+    ['VII', 'La#m7b5',  'Re#7',   'Sol#m7b5'],
+  ]},
+  { name:'Sib', rows:[
+    ['I',   'Dom7',     'Fa7',    'Sibmaj7'],
+    ['II',  'Rem7b5',   'Sol7',   'Dom7'],
+    ['III', 'Mim7b5',   'La7',    'Rem7'],
+    ['IV',  'Fam7',     'Sib7',   'Mibmaj7'],
+    ['V',   'Solm7',    'Do7',    'Fa7'],
+    ['VI',  'Lam7b5',   'Re7',    'Solm7'],
+    ['VII', 'Sim7b5',   'Mi7',    'Lam7b5'],
+  ]},
+  { name:'Si', rows:[
+    ['I',   'Do#m7',    'Fa#7',   'Simaj7'],
+    ['II',  'Re#m7b5',  'Sol#7',  'Do#m7'],
+    ['III', 'Fam7b5',   'La#7',   'Re#m7'],
+    ['IV',  'Fa#m7',    'Si7',    'Mimaj7'],
+    ['V',   'Sol#m7',   'Do#7',   'Fa#7'],
+    ['VI',  'La#m7b5',  'Re#7',   'Sol#m7'],
+    ['VII', 'Dom7b5',   'Fa7',    'La#m7b5'],
+  ]},
+];
+
+// ── CHORD FORMATTER ──────────────────────────────────────────────────────
+function fmtChord(s) {
+  const m = s.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([b#]?)(.*)$/);
+  if (!m) return `<span class="chord">${s}</span>`;
+  const [,note,acc,qual] = m;
+  const accHtml = acc === 'b' ? '<span class="acc">♭</span>' : acc === '#' ? '<span class="acc">♯</span>' : '';
+  const qualFmt = qual.replace('maj7','Δ7').replace('b5','♭5');
+  return `<span class="chord">${note}${accHtml}<span class="qual">${qualFmt}</span></span>`;
+}
+
+// Row color class based on the I chord quality
+function rowClass(iChord) {
+  if (iChord.includes('maj7')) return 'row-maj';
+  if (iChord.includes('m7b5') || iChord.includes('m7♭5')) return 'row-dim';
+  if (/[^m]7$/.test(iChord)) return 'row-dom'; // dominant 7 (not m7)
+  return 'row-maj'; // m7 → default
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────
+let currentKey = 0;
+
+function renderKeys() {
+  const grid = document.getElementById('keyGrid');
+  grid.innerHTML = KEYS_DATA.map((k,i) =>
+    `<button class="key-btn${i===currentKey?' active':''}" onclick="selectKey(${i})">${k.name}</button>`
+  ).join('');
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tbody');
+  const rows = KEYS_DATA[currentKey].rows;
+  tbody.innerHTML = rows.map(([deg, ii, v, i]) => {
+    const rc = rowClass(i);
+    return `<tr class="${rc}">
+      <td>${deg}</td>
+      <td>${fmtChord(ii)}</td>
+      <td>${fmtChord(v)}</td>
+      <td>${fmtChord(i)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function selectKey(idx) {
+  currentKey = idx;
+  renderKeys();
+  renderTable();
+}
+
+renderKeys();
+renderTable();
+</script>
+</body>
+</html>
