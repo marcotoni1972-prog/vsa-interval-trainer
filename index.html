@@ -131,6 +131,7 @@ let state={
   started:false,
   keyIdx:0,
   row:0,col:0,
+  paused:false,
   feedback:null,correctNote:"",
   correct:0,total:0,finished:false,
   showScale:false,voiceMode:true,
@@ -286,6 +287,7 @@ function newSession(){
     keyIdx:weightedKey(-1),
     row:0,col:0,feedback:null,correctNote:"",
     correct:0,total:0,finished:false,
+    paused:false,
     showScale:state.showScale,voiceMode:state.voiceMode,
     listening:false,speaking:false,transcript:"",micStatus:"In ascolto…"
   };
@@ -294,6 +296,21 @@ function newSession(){
   speak("Tonalità "+speakable(key.name)+". Grado "+TABLE[0][0],()=>{
     setTimeout(()=>startListening(),300);
   });
+}
+
+function togglePause(){
+  if(state.paused){
+    // riprendi
+    state.paused=false;
+    render();
+    speak(String(TABLE[state.row][state.col]),()=>{setTimeout(()=>startListening(),300);});
+  } else {
+    // sospendi
+    if(recog)try{recog.stop();}catch(e){}
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    state.listening=false;state.speaking=false;state.paused=true;
+    render();
+  }
 }
 
 function render(){
@@ -369,6 +386,7 @@ function render(){
     </div>
     <div class="bottom-links">
       <button onclick="toggleMode()">${voiceMode?"Passa a tastiera":"Passa a microfono"}</button>
+      <button onclick="togglePause()" style="${state.paused?'color:var(--green-text)':''}">${state.paused?"▶ Riprendi":"⏸ Sospendi"}</button>
       <button onclick="newSession()">Cambia tonalità</button>
     </div>`;
 
