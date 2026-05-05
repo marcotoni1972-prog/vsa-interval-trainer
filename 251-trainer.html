@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VSA — Progressioni 2-5-1</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#ffffff;--bg2:#f5f4f0;--bg3:#eeece7;
+      --text:#1a1a18;--text2:#6b6a66;--text3:#9e9c97;
+      --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
+      --green-bg:#eaf3de;--green-text:#3b6d11;--green-border:rgba(63,120,20,0.3);
+      --red-bg:#fcebeb;--red-text:#a32d2d;--red-border:rgba(180,40,40,0.3);
+      --blue-bg:#e6f1fb;--blue-text:#185fa5;--blue-border:rgba(55,138,221,0.4);
+      --radius:10px;--radius-lg:14px;
+    }
+    @media(prefers-color-scheme:dark){:root{
+      --bg:#1c1c1a;--bg2:#252522;--bg3:#2e2e2b;
+      --text:#f0ede6;--text2:#a09e99;--text3:#6b6a66;
+      --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+      --green-bg:#173404;--green-text:#c0dd97;--green-border:rgba(100,180,60,0.3);
+      --red-bg:#501313;--red-text:#f09595;--red-border:rgba(220,80,80,0.3);
+      --blue-bg:#042c53;--blue-text:#85b7eb;--blue-border:rgba(55,138,221,0.4);
+    }}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg3);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+    .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:2rem 1.75rem;width:100%;max-width:460px}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
+    .label{font-size:11px;color:var(--text2);letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+    .key-name{font-size:22px;font-weight:500}
+    .prog{font-size:13px;color:var(--text2);text-align:right}
+    .progbar{height:3px;background:var(--bg3);border-radius:2px;margin-bottom:1.75rem;overflow:hidden}
+    .progbar-fill{height:100%;background:#378add;border-radius:2px;transition:width .3s}
+    .scale-toggle{font-size:12px;color:var(--text3);cursor:pointer;border:none;background:none;padding:0;margin-bottom:1rem;text-decoration:underline;text-underline-offset:3px}
+    /* Reference grid: 4 cols (deg, II, V, I) × 7 rows */
+    .scale{display:grid;grid-template-columns:22px 1fr 1fr 1fr;gap:3px;margin-bottom:1.5rem}
+    .scale-cell{text-align:center;padding:5px 2px;border-radius:6px;background:var(--bg2);border:0.5px solid var(--border)}
+    .scale-cell.active{background:var(--blue-bg);border-color:var(--blue-border)}
+    .scale-deg{font-size:9px;color:var(--text2);font-weight:600}
+    .scale-note{font-size:10px;font-weight:500;line-height:1.3}
+    .scale-cell.active .scale-deg,.scale-cell.active .scale-note{color:var(--blue-text)}
+    .scale-cell.deg-col{background:none;border-color:transparent;display:flex;align-items:center;justify-content:center}
+    .scale-cell.deg-col .scale-deg{font-size:10px;color:var(--text3)}
+    .scale-cell.active.deg-col{background:none;border-color:transparent}
+    .scale-cell.active.deg-col .scale-deg{color:var(--blue-text)}
+    /* Big chord display */
+    .number-area{text-align:center;margin:1.5rem 0}
+    .big-chord-root{font-size:60px;font-weight:500;line-height:1;font-family:"Courier New",monospace;transition:color .2s}
+    .big-chord-qual{font-size:22px;font-weight:400;margin-top:4px;transition:color .2s}
+    .sub{font-size:12px;color:var(--text3);margin-top:6px}
+    /* Identical to naturali from here */
+    .mic-area{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:1rem}
+    .mic-btn{width:88px;height:88px;border-radius:50%;border:2px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent}
+    .mic-btn.listening{border-color:#e24b4a;background:var(--red-bg);animation:pulse 1.2s ease-in-out infinite}
+    .mic-btn.speaking{border-color:#378add;background:var(--blue-bg)}
+    .mic-btn svg{width:34px;height:34px}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(226,75,74,0.35)}50%{box-shadow:0 0 0 14px rgba(226,75,74,0)}}
+    .mic-status{font-size:14px;color:var(--text2);min-height:22px;text-align:center}
+    .mic-transcript{font-size:18px;font-weight:500;color:var(--blue-text);min-height:26px;text-align:center}
+    .feedback{padding:.85rem 1.1rem;border-radius:var(--radius-lg);margin-bottom:1rem;border:0.5px solid}
+    .feedback.ok{background:var(--green-bg);border-color:var(--green-border)}
+    .feedback.ko{background:var(--red-bg);border-color:var(--red-border)}
+    .fb-title{font-weight:500;margin-bottom:3px;font-size:15px}
+    .fb-title.ok{color:var(--green-text)}
+    .fb-title.ko{color:var(--red-text)}
+    .fb-sub{font-size:13px;color:var(--text2)}
+    .input-row{display:flex;gap:8px;margin-bottom:1rem}
+    input[type="text"]{flex:1;font-size:16px;padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);outline:none}
+    input[type="text"]:focus{border-color:#378add;box-shadow:0 0 0 2px rgba(55,138,221,.15)}
+    button{font-size:14px;padding:8px 18px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);cursor:pointer;transition:background .15s}
+    button:hover{background:var(--bg2)}
+    button:active{transform:scale(.98)}
+    .btn-full{width:100%;margin-bottom:1rem}
+    .scores{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:.75rem}
+    .score-card{background:var(--bg2);border-radius:var(--radius);padding:.65rem .75rem;text-align:center}
+    .score-val{font-size:20px;font-weight:500}
+    .bottom-links{display:flex;justify-content:space-between;margin-top:.75rem}
+    .bottom-links button{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:0}
+    .done{text-align:center;padding:3rem 1rem}
+    .done-emoji{font-size:48px;margin-bottom:.75rem}
+    .done h2{font-size:22px;font-weight:500;margin-bottom:.5rem}
+    .done p{color:var(--text2);margin-bottom:1.5rem}
+    .start-screen{text-align:center;padding:2.5rem 1rem}
+    .start-title{font-size:24px;font-weight:500;margin-bottom:.5rem}
+    .start-sub{font-size:14px;color:var(--text2);margin-bottom:2rem;line-height:1.6}
+    .start-btn{font-size:18px;padding:14px 40px;border-radius:50px;border:2px solid var(--border2);background:var(--bg);cursor:pointer;transition:all .2s}
+    .start-btn:hover{background:var(--bg2)}
+  </style>
+</head>
+<body>
+<div class="card" id="app"></div>
+<script>
+// ── DATI ─────────────────────────────────────────────────────────────────
+// [grado, II, V, I]
+const DATA=[
+  {n:'Do',r:[['I','Rem7','Sol7','Domaj7'],['II','Mim7b5','La7','Rem7'],['III','Fa#m7b5','Si7','Mim7'],['IV','Solm7','Do7','Famaj7'],['V','Lam7','Re7','Sol7'],['VI','Sim7b5','Mi7','Lam7'],['VII','Do#m7b5','Fa#7','Sim7b5']]},
+  {n:'Reb',r:[['I','Mibm7','Lab7','Rebmaj7'],['II','Fam7b5','Sib7','Mibm7'],['III','Solm7b5','Do7','Fam7'],['IV','Labm7','Reb7','Solbmaj7'],['V','Sibm7','Mib7','Lab7'],['VI','Dom7b5','Fa7','Sibm7'],['VII','Rem7b5','Sol7','Dom7b5']]},
+  {n:'Re',r:[['I','Mim7','La7','Remaj7'],['II','Fa#m7b5','Si7','Mim7'],['III','Sol#m7b5','Do#7','Fa#m7'],['IV','Lam7','Re7','Solmaj7'],['V','Sim7','Mi7','La7'],['VI','Do#m7b5','Fa#7','Sim7'],['VII','Re#m7b5','Sol#7','Do#m7b5']]},
+  {n:'Mib',r:[['I','Fam7','Sib7','Mibmaj7'],['II','Solm7b5','Do7','Fam7'],['III','Lam7b5','Re7','Solm7'],['IV','Sibm7','Mib7','Labmaj7'],['V','Dom7','Fa7','Sib7'],['VI','Rem7b5','Sol7','Dom7'],['VII','Mim7b5','La7','Rem7b5']]},
+  {n:'Mi',r:[['I','Fa#m7','Si7','Mimaj7'],['II','Sol#m7b5','Do#7','Fa#m7'],['III','La#m7b5','Re#7','Sol#m7'],['IV','Sim7','Mi7','Lamaj7'],['V','Do#m7','Fa#7','Si7'],['VI','Re#m7b5','Sol#7','Do#m7'],['VII','Fam7b5','La#7','Re#m7b5']]},
+  {n:'Fa',r:[['I','Solm7','Do7','Famaj7'],['II','Lam7b5','Re7','Solm7'],['III','Sim7b5','Mi7','Lam7'],['IV','Dom7','Fa7','Sibmaj7'],['V','Rem7','Sol7','Do7'],['VI','Mim7b5','La7','Rem7'],['VII','Fa#m7b5','Si7','Mim7b5']]},
+  {n:'Solb',r:[['I','Labm7','Reb7','Solbmaj7'],['II','Sibm7b5','Mib7','Labm7'],['III','Dom7b5','Fa7','Sibm7'],['IV','Rebm7','Solb7','Dobmaj7'],['V','Mibm7','Lab7','Reb7'],['VI','Fam7b5','Sib7','Mibm7'],['VII','Solm7b5','Do7','Fam7b5']]},
+  {n:'Sol',r:[['I','Lam7','Re7','Solmaj7'],['II','Sim7b5','Mi7','Lam7'],['III','Do#m7b5','Fa#7','Sim7'],['IV','Rem7','Sol7','Domaj7'],['V','Mim7','La7','Re7'],['VI','Fa#m7b5','Si7','Mim7'],['VII','Sol#m7b5','Do#7','Fa#m7b5']]},
+  {n:'Lab',r:[['I','Sibm7','Mib7','Labmaj7'],['II','Dom7b5','Fa7','Sibm7'],['III','Rem7b5','Sol7','Dom7'],['IV','Mibm7','Lab7','Rebmaj7'],['V','Fam7','Sib7','Mib7'],['VI','Solm7b5','Do7','Fam7'],['VII','Lam7b5','Re7','Solm7b5']]},
+  {n:'La',r:[['I','Sim7','Mi7','Lamaj7'],['II','Do#m7b5','Fa#7','Sim7'],['III','Re#m7b5','Sol#7','Do#m7'],['IV','Mim7','La7','Remaj7'],['V','Fa#m7','Si7','Mi7'],['VI','Sol#m7b5','Do#7','Fa#m7'],['VII','La#m7b5','Re#7','Sol#m7b5']]},
+  {n:'Sib',r:[['I','Dom7','Fa7','Sibmaj7'],['II','Rem7b5','Sol7','Dom7'],['III','Mim7b5','La7','Rem7'],['IV','Fam7','Sib7','Mibmaj7'],['V','Solm7','Do7','Fa7'],['VI','Lam7b5','Re7','Solm7'],['VII','Sim7b5','Mi7','Lam7b5']]},
+  {n:'Si',r:[['I','Do#m7','Fa#7','Simaj7'],['II','Re#m7b5','Sol#7','Do#m7'],['III','Fam7b5','La#7','Re#m7'],['IV','Fa#m7','Si7','Mimaj7'],['V','Sol#m7','Do#7','Fa#7'],['VI','La#m7b5','Re#7','Sol#m7'],['VII','Dom7b5','Fa7','La#m7b5']]},
+];
+
+const KEYS_NAMES=['Do','Reb','Re','Mib','Mi','Fa','Solb','Sol','Lab','La','Sib','Si'];
+const KEY_WEIGHTS=[1,6,3,4,5,2,7,2,5,4,3,6];
+const TOTAL=84; // 12 × 7
+
+// ── ALIAS VOCI ────────────────────────────────────────────────────────────
+const ALIASES={"do":"Do","dò":"Do","dó":"Do","re":"Re","ré":"Re","rè":"Re","mi":"Mi","mì":"Mi","fa":"Fa","fà":"Fa","sol":"Sol","so":"Sol","la":"La","là":"La","si":"Si","sì":"Si","reb":"Reb","re bemolle":"Reb","mib":"Mib","mi bemolle":"Mib","solb":"Solb","sol bemolle":"Solb","lab":"Lab","la bemolle":"Lab","sib":"Sib","si bemolle":"Sib","dob":"Dob","do bemolle":"Dob","fab":"Fab","fa bemolle":"Fab","fa#":"Fa#","fa diesis":"Fa#","do#":"Do#","do diesis":"Do#","sol#":"Sol#","sol diesis":"Sol#","re#":"Re#","re diesis":"Re#","la#":"La#","la diesis":"La#","mi#":"Mi#","mi diesis":"Mi#","si#":"Si#","si diesis":"Si#","do musicale":"Do","re musicale":"Re","mi musicale":"Mi","fa musicale":"Fa","sol musicale":"Sol","la musicale":"La","si musicale":"Si"};
+
+// Enarmoniche per il controllo risposta
+const CHORD_ENH={"Reb":"Do#","Do#":"Reb","Mib":"Re#","Re#":"Mib","Solb":"Fa#","Fa#":"Solb","Lab":"Sol#","Sol#":"Lab","Sib":"La#","La#":"Sib","Dob":"Si","Fab":"Mi"};
+
+// ── FORMATTAZIONE ─────────────────────────────────────────────────────────
+function speakable(t){
+  return t.replace(/Solb/g,"Sol bemolle").replace(/Sol#/g,"Sol diesis").replace(/Reb/g,"Re bemolle").replace(/Re#/g,"Re diesis").replace(/Mib/g,"Mi bemolle").replace(/Mi#/g,"Mi diesis").replace(/Lab/g,"La bemolle").replace(/La#/g,"La diesis").replace(/Sib/g,"Si bemolle").replace(/Si#/g,"Si diesis").replace(/Dob/g,"Do bemolle").replace(/Do#/g,"Do diesis").replace(/Fab/g,"Fa bemolle").replace(/Fa#/g,"Fa diesis");
+}
+
+const QUAL_SPEAK={"maj7":" maggiore settima","m7b5":" minore settima quinta bemolle","m7":" minore settima","7":" settima"};
+function chordSpeakable(chord){
+  const m=chord.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([b#]?)(.*)/);
+  if(!m)return chord;
+  const[,note,acc,qual]=m;
+  const noteSp=speakable(note+(acc==='b'?'b':acc==='#'?'#':''));
+  const qualSp=QUAL_SPEAK[qual]||(' '+qual);
+  return noteSp+qualSp;
+}
+
+function fmtChordHtml(chord,colorVar){
+  const m=chord.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([b#]?)(.*)/);
+  if(!m)return chord;
+  const[,note,acc,qual]=m;
+  const accH=acc==='b'?'♭':acc==='#'?'♯':'';
+  const qualH=qual.replace('maj7','Δ7').replace('b5','♭5');
+  const c=colorVar||'var(--text)';
+  return `<div class="big-chord-root" style="color:${c}">${note}${accH}</div><div class="big-chord-qual" style="color:${c==='var(--text)'?'var(--text2)':c}">${qualH}</div>`;
+}
+
+function fmtCell(chord){
+  const m=chord.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([b#]?)(.*)/);
+  if(!m)return chord;
+  const[,note,acc,qual]=m;
+  const accH=acc==='b'?'♭':acc==='#'?'♯':'';
+  const qualH=qual.replace('maj7','Δ7').replace('b5','♭5');
+  return `<div class="scale-note">${note}${accH}<span style="font-size:9px">${qualH}</span></div>`;
+}
+
+// ── PARSING RISPOSTA VOCALE ───────────────────────────────────────────────
+function normalizeVoice(s){
+  if(!s)return"";
+  const clean=s.trim().toLowerCase().replace(/[.,!?;:']/g,"").replace(/\bsoul\b/g,"sol");
+  if(ALIASES[clean])return ALIASES[clean];
+  const words=clean.split(" ");
+  if(words.length>=2){const tw=words[0]+" "+words[1];if(ALIASES[tw])return ALIASES[tw];}
+  if(ALIASES[words[0]])return ALIASES[words[0]];
+  return clean.charAt(0).toUpperCase()+clean.slice(1);
+}
+
+function parseChordAnswer(s){
+  if(!s)return"";
+  const clean=s.trim().toLowerCase().replace(/[.,!?;:']/g,"");
+  const qualPatterns=[
+    ["minore settima quinta bemolle","m7b5"],["minore sette quinta bemolle","m7b5"],
+    ["semidiminuito","m7b5"],["mezzo diminuito","m7b5"],
+    ["minore settima","m7"],["minore sette","m7"],
+    ["maggiore settima","maj7"],
+    ["dominante settima","7"],["dominante","7"],["settima","7"],["sette","7"],
+    ["minore","m7"],
+  ];
+  let qual="",rootStr=clean;
+  for(const[pat,q] of qualPatterns){
+    const idx=clean.indexOf(pat);
+    if(idx>=0){
+      qual=q;
+      rootStr=(clean.slice(0,idx)+" "+clean.slice(idx+pat.length)).trim();
+      break;
+    }
+  }
+  const root=normalizeVoice(rootStr.trim()||clean.split(" ")[0]);
+  if(!root||root.length>6)return"";
+  return root+qual;
+}
+
+function checkChordAnswer(input,correct){
+  if(!input||!correct)return false;
+  if(input===correct)return true;
+  // Controlla enarmonica (stessa qualità, radice enarmonica)
+  const split=s=>{const m=s.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([b#]?)(.*)/);return m?{root:m[1]+m[2],qual:m[3]}:null;};
+  const inp=split(input),cor=split(correct);
+  if(!inp||!cor||inp.qual!==cor.qual)return false;
+  return CHORD_ENH[cor.root]===inp.root||CHORD_ENH[inp.root]===cor.root;
+}
+
+function normText(s){
+  if(!s)return"";
+  // Prova prima come parsing vocale, poi come simbolo diretto
+  const parsed=parseChordAnswer(s);
+  if(parsed)return parsed;
+  s=s.trim();
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+
+// ── TTS / ASR (IDENTICO A NATURALI) ──────────────────────────────────────
+function speak(text,onEnd){
+  if(!window.speechSynthesis){if(onEnd)onEnd();return;}
+  window.speechSynthesis.cancel();
+  state.speaking=true;updateMicUI();
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang="it-IT";utt.rate=0.92;
+  utt.onend=()=>{state.speaking=false;updateMicUI();if(onEnd)onEnd();};
+  utt.onerror=()=>{state.speaking=false;if(onEnd)onEnd();};
+  window.speechSynthesis.speak(utt);
+}
+
+let recog=null;
+function setupRecog(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return null;
+  const r=new SR();
+  r.lang="it-IT";r.interimResults=true;r.maxAlternatives=3;
+  r.onresult=(e)=>{
+    let interim="",final="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal)final+=t;else interim+=t;
+    }
+    state.transcript=final||interim;updateMicUI();
+    if(final){state.listening=false;submitVoice(final);}
+  };
+  r.onerror=(e)=>{state.listening=false;state.micStatus=e.error==="no-speech"?"Non ho sentito, riprova":"Errore: "+e.error;state.transcript="";updateMicUI();};
+  r.onend=()=>{if(state.listening){state.listening=false;updateMicUI();}};
+  return r;
+}
+
+function updateMicUI(){
+  const btn=document.getElementById("mic-btn");
+  const status=document.getElementById("mic-status");
+  const trans=document.getElementById("mic-transcript");
+  if(btn){let cls="mic-btn";if(state.listening)cls+=" listening";else if(state.speaking)cls+=" speaking";btn.className=cls;}
+  if(status)status.textContent=state.speaking?"Sto parlando…":state.listening?"In ascolto…":state.micStatus;
+  if(trans)trans.textContent=state.transcript;
+}
+
+function startListening(){
+  if(!recog)recog=setupRecog();
+  if(!recog){state.micStatus="Microfono non supportato";updateMicUI();return;}
+  state.listening=true;state.transcript="";state.micStatus="In ascolto…";updateMicUI();
+  try{recog.start();}catch(e){recog=setupRecog();try{recog&&recog.start();}catch(e2){}}
+}
+
+function toggleMic(){
+  if(state.speaking)return;
+  if(state.listening){recog&&recog.stop();state.listening=false;state.micStatus="Premi per rispondere";updateMicUI();return;}
+  startListening();
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let state={
+  started:false,
+  keyIdx:0,degIdx:0,round:0,
+  paused:false,
+  feedback:null,correctII:"",fullProg:[],
+  correct:0,total:0,finished:false,
+  showScale:false,voiceMode:true,
+  listening:false,speaking:false,
+  transcript:"",micStatus:"In ascolto…"
+};
+
+// ── LOGICA ────────────────────────────────────────────────────────────────
+function curRow(){return DATA[state.keyIdx].r[state.degIdx];}
+
+function weightedKey(exclude){
+  const total=KEY_WEIGHTS.reduce((a,b,i)=>i===exclude?a:a+b,0);
+  let r=Math.random()*total;
+  for(let i=0;i<12;i++){if(i===exclude)continue;r-=KEY_WEIGHTS[i];if(r<=0)return i;}
+  return exclude===11?0:11;
+}
+
+function submitVoice(text){
+  const answer=parseChordAnswer(text);
+  const row=curRow();
+  const correctII=row[1];
+  const ok=checkChordAnswer(answer,correctII);
+  state.feedback=ok?"correct":"wrong";
+  state.correctII=correctII;
+  state.fullProg=[row[1],row[2],row[3]];
+  state.correct+=ok?1:0;state.total+=1;
+  render();
+  const msg=ok?"Esatto! "+chordSpeakable(correctII):"Sbagliato. "+chordSpeakable(correctII)+". Il 2-5-1 è: "+chordSpeakable(row[1])+" — "+chordSpeakable(row[2])+" — "+chordSpeakable(row[3]);
+  speak(msg,()=>{advanceAndAsk();});
+}
+
+function submitText(){
+  const inp=document.getElementById("ans");if(!inp)return;
+  const answer=normText(inp.value.trim());if(!answer)return;
+  const row=curRow();
+  const correctII=row[1];
+  const ok=checkChordAnswer(answer,correctII);
+  state.feedback=ok?"correct":"wrong";
+  state.correctII=correctII;
+  state.fullProg=[row[1],row[2],row[3]];
+  state.correct+=ok?1:0;state.total+=1;render();
+}
+
+function advanceAndAsk(){
+  state.feedback=null;state.correctII="";state.fullProg=[];state.transcript="";
+  const nextDeg=state.degIdx+1;
+  if(nextDeg>=7){
+    const nextRound=state.round+1;
+    if(nextRound>=12){state.finished=true;render();speak("Tavola completata! "+state.correct+" su "+state.total+" corretti.");return;}
+    state.round=nextRound;state.degIdx=0;
+    const newKey=weightedKey(state.keyIdx);
+    state.keyIdx=newKey;
+    render();
+    const firstI=DATA[newKey].r[0][3];
+    speak("Nuova tonalità: "+speakable(KEYS_NAMES[newKey])+". "+chordSpeakable(firstI),()=>{setTimeout(()=>startListening(),300);});
+    return;
+  }
+  state.degIdx=nextDeg;
+  render();
+  const iChord=curRow()[3];
+  speak(chordSpeakable(iChord),()=>{setTimeout(()=>startListening(),300);});
+}
+
+function nextManual(){
+  state.feedback=null;state.correctII="";state.fullProg=[];state.transcript="";
+  const nextDeg=state.degIdx+1;
+  if(nextDeg>=7){
+    const nextRound=state.round+1;
+    if(nextRound>=12){state.finished=true;render();return;}
+    state.round=nextRound;state.degIdx=0;
+    state.keyIdx=weightedKey(state.keyIdx);
+  }else{state.degIdx=nextDeg;}
+  render();
+}
+
+function toggleScale(){state.showScale=!state.showScale;render();}
+function toggleMode(){state.voiceMode=!state.voiceMode;render();}
+
+function togglePause(){
+  if(state.paused){
+    state.paused=false;render();
+    speak(chordSpeakable(curRow()[3]),()=>{setTimeout(()=>startListening(),300);});
+  }else{
+    if(recog)try{recog.stop();}catch(e){}
+    window.speechSynthesis&&window.speechSynthesis.cancel();
+    state.listening=false;state.speaking=false;state.paused=true;render();
+  }
+}
+
+function startSession(){
+  state.started=true;state.keyIdx=weightedKey(-1);render();
+  const iChord=DATA[state.keyIdx].r[0][3];
+  speak("Tonalità "+speakable(KEYS_NAMES[state.keyIdx])+". "+chordSpeakable(iChord),()=>{setTimeout(()=>startListening(),300);});
+}
+
+function newSession(){
+  if(recog)try{recog.stop();}catch(e){}
+  state={
+    started:true,keyIdx:weightedKey(-1),degIdx:0,round:0,
+    paused:false,feedback:null,correctII:"",fullProg:[],
+    correct:0,total:0,finished:false,
+    showScale:state.showScale,voiceMode:state.voiceMode,
+    listening:false,speaking:false,transcript:"",micStatus:"In ascolto…"
+  };
+  render();
+  const iChord=DATA[state.keyIdx].r[0][3];
+  speak("Tonalità "+speakable(KEYS_NAMES[state.keyIdx])+". "+chordSpeakable(iChord),()=>{setTimeout(()=>startListening(),300);});
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function render(){
+  const{started,keyIdx,degIdx,round,feedback,correctII,fullProg,correct,total,finished,showScale,voiceMode}=state;
+  const app=document.getElementById("app");
+
+  if(!started){
+    app.innerHTML=`
+      <div class="start-screen">
+        <div style="font-size:48px;margin-bottom:1rem">🎶</div>
+        <div class="start-title">Progressioni 2–5–1</div>
+        <div class="start-sub">Tonalità: <strong>${KEYS_NAMES[state.keyIdx]} maggiore</strong><br>L'app legge il I, tu rispondi con il II.</div>
+        <button class="start-btn" onclick="startSession()">▶ Inizia</button>
+      </div>`;
+    return;
+  }
+
+  if(finished){
+    const pct=total>0?Math.round(correct/total*100):0;
+    app.innerHTML=`<div class="done"><div class="done-emoji">🎶</div><h2>Tavola completata!</h2><p>${correct} / ${total} corretti &middot; ${pct}%</p><button onclick="newSession()">Nuova sessione &rarr;</button></div>`;
+    return;
+  }
+
+  const keyName=KEYS_NAMES[keyIdx];
+  const row=DATA[keyIdx].r[degIdx];
+  const[deg,ii,v,iChord]=row;
+  const pos=round*7+degIdx+1;
+  const pct=Math.round(pos/TOTAL*100);
+  const bigColor=feedback==="correct"?"var(--green-text)":feedback==="wrong"?"var(--red-text)":"var(--text)";
+
+  // Reference grid: 4 cols × 7 rows
+  const refHtml=showScale?`<div class="scale">${
+    DATA[keyIdx].r.map(([d,r2,v2,i2],idx)=>{
+      const active=idx===degIdx;
+      const ac=active?" active":"";
+      return `<div class="scale-cell deg-col${ac}"><div class="scale-deg">${d}</div></div>`+
+             `<div class="scale-cell${ac}">${fmtCell(r2)}</div>`+
+             `<div class="scale-cell${ac}">${fmtCell(v2)}</div>`+
+             `<div class="scale-cell${ac}">${fmtCell(i2)}</div>`;
+    }).join("")
+  }</div>`:"";
+
+  // Feedback sub: shows full progression
+  const fbSub=feedback==="correct"
+    ?`Progressione completa: <strong>${fullProg.join(" — ")}</strong>`
+    :`La risposta corretta era <strong>${correctII}</strong>. Progressione: <strong>${fullProg.join(" — ")}</strong>`;
+
+  let inputHtml="";
+  if(voiceMode){
+    let cls="mic-btn";
+    if(state.listening)cls+=" listening";
+    else if(state.speaking)cls+=" speaking";
+    inputHtml=`
+      <div class="mic-area">
+        <button class="${cls}" id="mic-btn" onclick="toggleMic()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"/>
+            <path d="M5 10a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+            <line x1="9" y1="21" x2="15" y2="21"/>
+          </svg>
+        </button>
+        <div class="mic-transcript" id="mic-transcript">${state.transcript}</div>
+        <div class="mic-status" id="mic-status">${state.speaking?"Sto parlando…":state.listening?"In ascolto…":state.micStatus}</div>
+      </div>`;
+    if(feedback){inputHtml+=`<div class="feedback ${feedback==="correct"?"ok":"ko"}"><div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div><div class="fb-sub">${fbSub}</div></div>`;}
+  }else{
+    if(!feedback){inputHtml=`<div class="input-row"><input id="ans" type="text" placeholder="es. Rem7, Sol#m7b5…" autocomplete="off" autocorrect="off" spellcheck="false"/><button onclick="submitText()">OK</button></div>`;}
+    else{inputHtml=`<div class="feedback ${feedback==="correct"?"ok":"ko"}"><div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div><div class="fb-sub">${fbSub}</div></div><button class="btn-full" onclick="nextManual()">Avanti &rarr;</button>`;}
+  }
+
+  app.innerHTML=`
+    <div class="header">
+      <div><div class="label">Tonalità</div><div class="key-name">${keyName} maggiore</div></div>
+      <div><div class="label" style="text-align:right">Progresso</div><div class="prog">${pos} / ${TOTAL}</div></div>
+    </div>
+    <div class="progbar"><div class="progbar-fill" style="width:${pct}%"></div></div>
+    <button class="scale-toggle" onclick="toggleScale()">${showScale?"Nascondi progressioni":"Mostra progressioni"}</button>
+    ${refHtml}
+    <div class="number-area">
+      <div class="label">Qual è il II di</div>
+      ${fmtChordHtml(iChord,bigColor)}
+      <div class="sub">Grado ${deg} &middot; ${degIdx+1} / 7</div>
+    </div>
+    ${inputHtml}
+    <div class="scores">
+      <div class="score-card"><div class="label">Corretti</div><div class="score-val" style="color:var(--green-text)">${correct}</div></div>
+      <div class="score-card"><div class="label">Sbagliati</div><div class="score-val" style="color:var(--red-text)">${total-correct}</div></div>
+      <div class="score-card"><div class="label">% corretti</div><div class="score-val">${total>0?Math.round(correct/total*100)+"%":"—"}</div></div>
+    </div>
+    <div class="bottom-links">
+      <button onclick="toggleMode()">${voiceMode?"Passa a tastiera":"Passa a microfono"}</button>
+      <button onclick="togglePause()" style="${state.paused?"color:var(--green-text)":""}">${state.paused?"▶ Riprendi":"⏸ Sospendi"}</button>
+      <button onclick="newSession()">Cambia tonalità</button>
+    </div>`;
+
+  if(!voiceMode&&!feedback){const inp=document.getElementById("ans");if(inp){inp.focus();inp.addEventListener("keydown",e=>{if(e.key==="Enter")submitText();});}}
+}
+
+render();
+</script>
+</body>
+</html>
