@@ -173,7 +173,8 @@ let state={
   correct:0,total:0,finished:false,
   showScale:false,voiceMode:true,
   listening:false,speaking:false,
-  transcript:"",micStatus:"In ascolto…"
+  transcript:"",micStatus:"In ascolto…",
+  paused:false,
 };
 
 function speak(text,onEnd){
@@ -332,13 +333,29 @@ function newSession(){
     row:0,col:0,feedback:null,correctNote:"",
     correct:0,total:0,finished:false,
     showScale:state.showScale,voiceMode:state.voiceMode,
-    listening:false,speaking:false,transcript:"",micStatus:"In ascolto…"
+    listening:false,speaking:false,transcript:"",micStatus:"In ascolto…",
+    paused:false,
   };
   render();
   const key=KEYS[state.keyIdx];
   speak("Tonalità "+speakable(key.name)+". "+IV_SPEAK[TABLE[0][0]],()=>{
     setTimeout(()=>startListening(),300);
   });
+}
+
+function togglePause(){
+  if(state.paused){
+    // riprendi
+    state.paused=false;
+    render();
+    speak(IV_SPEAK[TABLE[state.row][state.col]],()=>{setTimeout(()=>startListening(),300);});
+  }else{
+    // sospendi
+    if(recog)try{recog.stop();}catch(e){}
+    window.speechSynthesis&&window.speechSynthesis.cancel();
+    state.listening=false;state.speaking=false;state.paused=true;
+    render();
+  }
 }
 
 function render(){
@@ -425,6 +442,7 @@ function render(){
     </div>
     <div class="bottom-links">
       <button onclick="toggleMode()">${voiceMode?"Passa a tastiera":"Passa a microfono"}</button>
+      <button onclick="togglePause()" style="${state.paused?'color:var(--green-text)':''}">${state.paused?"▶ Riprendi":"⏸ Sospendi"}</button>
       <button onclick="newSession()">Cambia tonalità</button>
     </div>`;
 
