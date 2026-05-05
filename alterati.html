@@ -31,16 +31,16 @@
     .prog{font-size:13px;color:var(--text2);text-align:right}
     .progbar{height:3px;background:var(--bg3);border-radius:2px;margin-bottom:1.75rem;overflow:hidden}
     .progbar-fill{height:100%;background:#378add;border-radius:2px;transition:width .3s}
-    .ref-toggle{font-size:12px;color:var(--text3);cursor:pointer;border:none;background:none;padding:0;margin-bottom:1rem;text-decoration:underline;text-underline-offset:3px}
-    .ref-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:1.5rem}
-    .ref-cell{text-align:center;padding:5px 2px;border-radius:6px;background:var(--bg2);border:0.5px solid var(--border)}
-    .ref-cell.active{background:var(--blue-bg);border-color:var(--blue-border)}
-    .ref-deg{font-size:10px;color:var(--text2)}
-    .ref-note{font-size:11px;font-weight:500}
-    .ref-cell.active .ref-deg,.ref-cell.active .ref-note{color:var(--blue-text)}
+    .scale-toggle{font-size:12px;color:var(--text3);cursor:pointer;border:none;background:none;padding:0;margin-bottom:1rem;text-decoration:underline;text-underline-offset:3px}
+    .scale{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:1.5rem}
+    .scale-cell{text-align:center;padding:5px 2px;border-radius:6px;background:var(--bg2);border:0.5px solid var(--border)}
+    .scale-cell.active{background:var(--blue-bg);border-color:var(--blue-border)}
+    .scale-deg{font-size:10px;color:var(--text2)}
+    .scale-note{font-size:11px;font-weight:500}
+    .scale-cell.active .scale-deg,.scale-cell.active .scale-note{color:var(--blue-text)}
     .number-area{text-align:center;margin:1.5rem 0}
-    .big-iv{font-size:90px;font-weight:500;line-height:1;font-family:"Courier New",monospace;transition:color .2s}
-    .big-iv sup{font-size:44px;vertical-align:super;line-height:0}
+    .big-number{font-size:90px;font-weight:500;line-height:1;font-family:"Courier New",monospace;transition:color .2s}
+    .big-number sup{font-size:44px;vertical-align:super;line-height:0}
     .sub{font-size:12px;color:var(--text3);margin-top:6px}
     .mic-area{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:1rem}
     .mic-btn{width:88px;height:88px;border-radius:50%;border:2px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent}
@@ -83,64 +83,354 @@
 <body>
 <div class="card" id="app"></div>
 <script>
-const TABLE=[['3b','5b','2b','5#','7b','4#','5b','6b','2b','5#','6b','2#','3b','2#','5b','2#','3b','7b','5#','4#'],['5#','4#','2b','5b','6b','7b','6b','2#','3b','4#','5b','7b','6b','2#','2b','5#','3b','4#','2b','5#'],['3b','2b','2#','7b','3b','5b','7b','5#','7b','5#','3b','2#','6b','5b','6b','4#','2b','6b','4#','5#'],['7b','2#','2b','6b','3b','6b','5#','4#','2b','4#','2b','3b','2#','5b','3b','5#','7b','2b','5b','2#'],['5b','5#','4#','2#','6b','5b','7b','3b','2#','2b','3b','2#','4#','5b','7b','2b','4#','5#','2b','6b'],['2b','5#','7b','3b','4#','2b','5b','6b','5b','7b','3b','7b','2b','5#','2#','2b','2#','4#','2#','6b'],['3b','4#','2b','7b','5b','2#','4#','2b','2#','5#','2b','3b','6b','5#','6b','5b','3b','7b','5b','5#'],['7b','5#','6b','2#','6b','2b','5b','5#','3b','4#','3b','2b','5b','5#','4#','7b','5#','2#','2b','5b'],['2b','6b','3b','5b','4#','2#','7b','2#','7b','4#','6b','4#','5#','5b','2#','5#','7b','3b','6b','2b'],['2b','3b','7b','4#','2b','2#','7b','5b','3b','5b','4#','3b','5b','3b','5#','6b','5#','2#','6b','4#'],['6b','7b','2#','5#','3b','2#','5b','2b','6b','2b','4#','5#','7b','5#','7b','2#','5b','3b','4#','7b'],['5#','5b','2#','3b','4#','6b','2#','3b','2b','7b','5b','7b','2b','3b','7b','4#','6b','5#','2b','5#']];
-const KEYS=[{name:'Do',scale:['Do','Re','Mi','Fa','Sol','La','Si']},{name:'Reb',scale:['Reb','Mib','Fa','Solb','Lab','Sib','Do']},{name:'Re',scale:['Re','Mi','Fa#','Sol','La','Si','Do#']},{name:'Mib',scale:['Mib','Fa','Sol','Lab','Sib','Do','Re']},{name:'Mi',scale:['Mi','Fa#','Sol#','La','Si','Do#','Re#']},{name:'Fa',scale:['Fa','Sol','La','Sib','Do','Re','Mi']},{name:'Solb',scale:['Solb','Lab','Sib','Dob','Reb','Mib','Fa']},{name:'Sol',scale:['Sol','La','Si','Do','Re','Mi','Fa#']},{name:'Lab',scale:['Lab','Sib','Do','Reb','Mib','Fa','Sol']},{name:'La',scale:['La','Si','Do#','Re','Mi','Fa#','Sol#']},{name:'Sib',scale:['Sib','Do','Re','Mib','Fa','Sol','La']},{name:'Si',scale:['Si','Do#','Re#','Mi','Fa#','Sol#','La#']}];
-const ALTERED={'Do':{'2b':'Reb','2#':'Re#','3b':'Mib','4#':'Fa#','5b':'Solb','5#':'Sol#','6b':'Lab','7b':'Sib'},'Reb':{'2b':'Re','2#':'Mi','3b':'Fab','4#':'Sol','5b':'Sol','5#':'La','6b':'La','7b':'Dob'},'Re':{'2b':'Mib','2#':'Mi#','3b':'Fa','4#':'Sol#','5b':'Lab','5#':'La#','6b':'Sib','7b':'Do'},'Mib':{'2b':'Fab','2#':'Fa#','3b':'Solb','4#':'La','5b':'La','5#':'Si','6b':'Dob','7b':'Reb'},'Mi':{'2b':'Fa','2#':'Sol','3b':'Sol','4#':'La#','5b':'Sib','5#':'Si#','6b':'Do','7b':'Re'},'Fa':{'2b':'Solb','2#':'Sol#','3b':'Lab','4#':'Si','5b':'Dob','5#':'Do#','6b':'Reb','7b':'Mib'},'Solb':{'2b':'Sol','2#':'La','3b':'La','4#':'Do','5b':'Do','5#':'Re','6b':'Re','7b':'Fab'},'Sol':{'2b':'Lab','2#':'La#','3b':'Sib','4#':'Do#','5b':'Reb','5#':'Re#','6b':'Mib','7b':'Fa'},'Lab':{'2b':'La','2#':'Si','3b':'Dob','4#':'Re','5b':'Re','5#':'Mi','6b':'Fab','7b':'Solb'},'La':{'2b':'Sib','2#':'Si#','3b':'Do','4#':'Re#','5b':'Mib','5#':'Mi#','6b':'Fa','7b':'Sol'},'Sib':{'2b':'Dob','2#':'Do#','3b':'Reb','4#':'Mi','5b':'Fab','5#':'Fa#','6b':'Solb','7b':'Lab'},'Si':{'2b':'Do','2#':'Re','3b':'Re','4#':'Mi#','5b':'Fa','5#':'Sol','6b':'Sol','7b':'La'}};
-const ENHARMONIC={'Reb':'Do#','Do#':'Reb','Mib':'Re#','Re#':'Mib','Solb':'Fa#','Fa#':'Solb','Lab':'Sol#','Sol#':'Lab','Sib':'La#','La#':'Sib','Dob':'Si','Mi':'Fab','Fab':'Mi','Fa':'Mi#','Mi#':'Fa','Do':'Si#','Si#':'Do'};
-const IV_SPEAK={'2b':'seconda bemolle','2#':'seconda diesis','3b':'terza bemolle','4#':'quarta diesis','5b':'quinta bemolle','5#':'quinta diesis','6b':'sesta bemolle','7b':'settima bemolle'};
+// ── DATI SPECIFICI INTERVALLI ALTERATI ──────────────────────────────────────
+const TABLE=[
+  ['3b','5b','2b','5#','7b','4#','5b','6b','2b','5#','6b','2#','3b','2#','5b','2#','3b','7b','5#','4#'],
+  ['5#','4#','2b','5b','6b','7b','6b','2#','3b','4#','5b','7b','6b','2#','2b','5#','3b','4#','2b','5#'],
+  ['3b','2b','2#','7b','3b','5b','7b','5#','7b','5#','3b','2#','6b','5b','6b','4#','2b','6b','4#','5#'],
+  ['7b','2#','2b','6b','3b','6b','5#','4#','2b','4#','2b','3b','2#','5b','3b','5#','7b','2b','5b','2#'],
+  ['5b','5#','4#','2#','6b','5b','7b','3b','2#','2b','3b','2#','4#','5b','7b','2b','4#','5#','2b','6b'],
+  ['2b','5#','7b','3b','4#','2b','5b','6b','5b','7b','3b','7b','2b','5#','2#','2b','2#','4#','2#','6b'],
+  ['3b','4#','2b','7b','5b','2#','4#','2b','2#','5#','2b','3b','6b','5#','6b','5b','3b','7b','5b','5#'],
+  ['7b','5#','6b','2#','6b','2b','5b','5#','3b','4#','3b','2b','5b','5#','4#','7b','5#','2#','2b','5b'],
+  ['2b','6b','3b','5b','4#','2#','7b','2#','7b','4#','6b','4#','5#','5b','2#','5#','7b','3b','6b','2b'],
+  ['2b','3b','7b','4#','2b','2#','7b','5b','3b','5b','4#','3b','5b','3b','5#','6b','5#','2#','6b','4#'],
+  ['6b','7b','2#','5#','3b','2#','5b','2b','6b','2b','4#','5#','7b','5#','7b','2#','5b','3b','4#','7b'],
+  ['5#','5b','2#','3b','4#','6b','2#','3b','2b','7b','5b','7b','2b','3b','7b','4#','6b','5#','2b','5#'],
+];
+
+const KEYS=[
+  {name:"Do",   notes:["Do","Re","Mi","Fa","Sol","La","Si"]},
+  {name:"Reb",  notes:["Reb","Mib","Fa","Solb","Lab","Sib","Do"]},
+  {name:"Re",   notes:["Re","Mi","Fa#","Sol","La","Si","Do#"]},
+  {name:"Mib",  notes:["Mib","Fa","Sol","Lab","Sib","Do","Re"]},
+  {name:"Mi",   notes:["Mi","Fa#","Sol#","La","Si","Do#","Re#"]},
+  {name:"Fa",   notes:["Fa","Sol","La","Sib","Do","Re","Mi"]},
+  {name:"Solb", notes:["Solb","Lab","Sib","Dob","Reb","Mib","Fa"]},
+  {name:"Sol",  notes:["Sol","La","Si","Do","Re","Mi","Fa#"]},
+  {name:"Lab",  notes:["Lab","Sib","Do","Reb","Mib","Fa","Sol"]},
+  {name:"La",   notes:["La","Si","Do#","Re","Mi","Fa#","Sol#"]},
+  {name:"Sib",  notes:["Sib","Do","Re","Mib","Fa","Sol","La"]},
+  {name:"Si",   notes:["Si","Do#","Re#","Mi","Fa#","Sol#","La#"]},
+];
+
+// Note corrette per ogni intervallo alterato in ogni tonalità
+const ALTERED={
+  "Do":  {"2b":"Reb","2#":"Re#","3b":"Mib","4#":"Fa#","5b":"Solb","5#":"Sol#","6b":"Lab","7b":"Sib"},
+  "Reb": {"2b":"Re", "2#":"Mi", "3b":"Fab","4#":"Sol","5b":"Sol", "5#":"La", "6b":"La", "7b":"Dob"},
+  "Re":  {"2b":"Mib","2#":"Mi#","3b":"Fa", "4#":"Sol#","5b":"Lab","5#":"La#","6b":"Sib","7b":"Do"},
+  "Mib": {"2b":"Fab","2#":"Fa#","3b":"Solb","4#":"La","5b":"La",  "5#":"Si", "6b":"Dob","7b":"Reb"},
+  "Mi":  {"2b":"Fa", "2#":"Sol","3b":"Sol","4#":"La#","5b":"Sib", "5#":"Si#","6b":"Do", "7b":"Re"},
+  "Fa":  {"2b":"Solb","2#":"Sol#","3b":"Lab","4#":"Si","5b":"Dob","5#":"Do#","6b":"Reb","7b":"Mib"},
+  "Solb":{"2b":"Sol","2#":"La", "3b":"La", "4#":"Do","5b":"Do",  "5#":"Re", "6b":"Re", "7b":"Fab"},
+  "Sol": {"2b":"Lab","2#":"La#","3b":"Sib","4#":"Do#","5b":"Reb","5#":"Re#","6b":"Mib","7b":"Fa"},
+  "Lab": {"2b":"La", "2#":"Si", "3b":"Dob","4#":"Re","5b":"Re",  "5#":"Mi", "6b":"Fab","7b":"Solb"},
+  "La":  {"2b":"Sib","2#":"Si#","3b":"Do", "4#":"Re#","5b":"Mib","5#":"Mi#","6b":"Fa", "7b":"Sol"},
+  "Sib": {"2b":"Dob","2#":"Do#","3b":"Reb","4#":"Mi","5b":"Fab", "5#":"Fa#","6b":"Solb","7b":"Lab"},
+  "Si":  {"2b":"Do", "2#":"Re", "3b":"Re", "4#":"Mi#","5b":"Fa", "5#":"Sol","6b":"Sol","7b":"La"},
+};
+
+// Enarmoniche accettate
+const ENHARMONIC={
+  "Reb":"Do#","Do#":"Reb","Mib":"Re#","Re#":"Mib",
+  "Solb":"Fa#","Fa#":"Solb","Lab":"Sol#","Sol#":"Lab",
+  "Sib":"La#","La#":"Sib","Dob":"Si","Mi":"Fab","Fab":"Mi",
+  "Fa":"Mi#","Mi#":"Fa","Do":"Si#","Si#":"Do",
+};
+
+// Come leggere ogni intervallo ad alta voce
+const IV_SPEAK={
+  "2b":"seconda bemolle","2#":"seconda diesis",
+  "3b":"terza bemolle",
+  "4#":"quarta diesis",
+  "5b":"quinta bemolle","5#":"quinta diesis",
+  "6b":"sesta bemolle",
+  "7b":"settima bemolle",
+};
+
+// ── CODICE IDENTICO ALLA APP NATURALI (da qui in poi) ───────────────────────
 const ALIASES={"do":"Do","dò":"Do","dó":"Do","re":"Re","ré":"Re","rè":"Re","mi":"Mi","mì":"Mi","fa":"Fa","fà":"Fa","sol":"Sol","so":"Sol","la":"La","là":"La","si":"Si","sì":"Si","reb":"Reb","re bemolle":"Reb","mib":"Mib","mi bemolle":"Mib","solb":"Solb","sol bemolle":"Solb","lab":"Lab","la bemolle":"Lab","sib":"Sib","si bemolle":"Sib","dob":"Dob","do bemolle":"Dob","fab":"Fab","fa bemolle":"Fab","fa#":"Fa#","fa diesis":"Fa#","do#":"Do#","do diesis":"Do#","sol#":"Sol#","sol diesis":"Sol#","re#":"Re#","re diesis":"Re#","la#":"La#","la diesis":"La#","mi#":"Mi#","mi diesis":"Mi#","si#":"Si#","si diesis":"Si#","do musicale":"Do","re musicale":"Re","mi musicale":"Mi","fa musicale":"Fa","sol musicale":"Sol","la musicale":"La","si musicale":"Si","do nota":"Do","re nota":"Re","mi nota":"Mi","fa nota":"Fa","sol nota":"Sol","la nota":"La","si nota":"Si"};
 
-function speakable(t){return t.replace(/Solb/g,"Sol bemolle").replace(/Sol#/g,"Sol diesis").replace(/Reb/g,"Re bemolle").replace(/Re#/g,"Re diesis").replace(/Mib/g,"Mi bemolle").replace(/Mi#/g,"Mi diesis").replace(/Lab/g,"La bemolle").replace(/La#/g,"La diesis").replace(/Sib/g,"Si bemolle").replace(/Si#/g,"Si diesis").replace(/Dob/g,"Do bemolle").replace(/Do#/g,"Do diesis").replace(/Fab/g,"Fa bemolle").replace(/Fa#/g,"Fa diesis");}
-function normalizeVoice(s){if(!s)return"";const clean=s.trim().toLowerCase().replace(/[.,!?;:']/g,"");if(ALIASES[clean])return ALIASES[clean];const words=clean.split(" ");if(words.length>=2){const tw=words[0]+" "+words[1];if(ALIASES[tw])return ALIASES[tw];}if(ALIASES[words[0]])return ALIASES[words[0]];return clean.charAt(0).toUpperCase()+clean.slice(1);}
+function speakable(text){
+  return text
+    .replace(/Solb/g,"Sol bemolle").replace(/Sol#/g,"Sol diesis")
+    .replace(/Reb/g,"Re bemolle").replace(/Re#/g,"Re diesis")
+    .replace(/Mib/g,"Mi bemolle").replace(/Mi#/g,"Mi diesis")
+    .replace(/Lab/g,"La bemolle").replace(/La#/g,"La diesis")
+    .replace(/Sib/g,"Si bemolle").replace(/Si#/g,"Si diesis")
+    .replace(/Dob/g,"Do bemolle").replace(/Do#/g,"Do diesis")
+    .replace(/Fab/g,"Fa bemolle").replace(/Fa#/g,"Fa diesis");
+}
+
+function normalizeVoice(s){if(!s)return"";const clean=s.trim().toLowerCase().replace(/[.,!?;:]/g,"");if(ALIASES[clean])return ALIASES[clean];const first=clean.split(" ")[0];if(ALIASES[first])return ALIASES[first];const second=clean.split(" ")[1]||"";if(ALIASES[second])return ALIASES[second];return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
 function norm(s){if(!s)return"";return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
 
-let state={started:false,keyIdx:0,row:0,col:0,feedback:null,correctNote:"",correct:0,total:0,finished:false,showRef:false,voiceMode:true,listening:false,speaking:false,transcript:"",micStatus:"Premi per rispondere"};
+let state={
+  started:false,
+  keyIdx:0,
+  row:0,col:0,
+  feedback:null,correctNote:"",
+  correct:0,total:0,finished:false,
+  showScale:false,voiceMode:true,
+  listening:false,speaking:false,
+  transcript:"",micStatus:"In ascolto…"
+};
 
-function speak(text,onEnd){if(!window.speechSynthesis){if(onEnd)onEnd();return;}window.speechSynthesis.cancel();state.speaking=true;updateMicUI();const utt=new SpeechSynthesisUtterance(text);utt.lang="it-IT";utt.rate=0.92;utt.onend=()=>{state.speaking=false;updateMicUI();if(onEnd)onEnd();};utt.onerror=()=>{state.speaking=false;if(onEnd)onEnd();};window.speechSynthesis.speak(utt);}
+function speak(text,onEnd){
+  if(!window.speechSynthesis){if(onEnd)onEnd();return;}
+  window.speechSynthesis.cancel();
+  state.speaking=true;
+  updateMicUI();
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang="it-IT";utt.rate=0.92;
+  utt.onend=()=>{state.speaking=false;updateMicUI();if(onEnd)onEnd();};
+  utt.onerror=()=>{state.speaking=false;if(onEnd)onEnd();};
+  window.speechSynthesis.speak(utt);
+}
 
 let recog=null;
-function setupRecog(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return null;const r=new SR();r.lang="it-IT";r.interimResults=true;r.maxAlternatives=3;r.onresult=(e)=>{let interim="",final="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)final+=t;else interim+=t;}state.transcript=final||interim;updateMicUI();if(final){state.listening=false;submitVoice(final);}};r.onerror=(e)=>{state.listening=false;state.micStatus=e.error==="no-speech"?"Non ho sentito, riprova":"Errore: "+e.error;state.transcript="";updateMicUI();};r.onend=()=>{if(state.listening){state.listening=false;updateMicUI();}};return r;}
+function setupRecog(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return null;
+  const r=new SR();
+  r.lang="it-IT";r.interimResults=true;r.maxAlternatives=3;
+  r.onresult=(e)=>{
+    let interim="",final="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal)final+=t;else interim+=t;
+    }
+    state.transcript=final||interim;
+    updateMicUI();
+    if(final){state.listening=false;submitVoice(final);}
+  };
+  r.onerror=(e)=>{
+    state.listening=false;
+    state.micStatus=e.error==="no-speech"?"Non ho sentito, riprova":"Errore: "+e.error;
+    state.transcript="";updateMicUI();
+  };
+  r.onend=()=>{if(state.listening){state.listening=false;updateMicUI();}};
+  return r;
+}
 
-function updateMicUI(){const btn=document.getElementById("mic-btn");const status=document.getElementById("mic-status");const trans=document.getElementById("mic-transcript");if(btn){let cls="mic-btn";if(state.listening)cls+=" listening";else if(state.speaking)cls+=" speaking";btn.className=cls;}if(status)status.textContent=state.speaking?"Sto parlando…":state.listening?"In ascolto…":state.micStatus;if(trans)trans.textContent=state.transcript;}
-function startListening(){if(!recog)recog=setupRecog();if(!recog){state.micStatus="Microfono non supportato";updateMicUI();return;}state.listening=true;state.transcript="";state.micStatus="In ascolto…";updateMicUI();try{recog.start();}catch(e){recog=setupRecog();try{recog&&recog.start();}catch(e2){}}}
-function toggleMic(){if(state.speaking)return;if(state.listening){recog&&recog.stop();state.listening=false;state.micStatus="Premi per rispondere";updateMicUI();return;}startListening();}
+function updateMicUI(){
+  const btn=document.getElementById("mic-btn");
+  const status=document.getElementById("mic-status");
+  const trans=document.getElementById("mic-transcript");
+  if(btn){
+    let cls="mic-btn";
+    if(state.listening)cls+=" listening";
+    else if(state.speaking)cls+=" speaking";
+    btn.className=cls;
+  }
+  if(status)status.textContent=state.speaking?"Sto parlando…":state.listening?"In ascolto…":state.micStatus;
+  if(trans)trans.textContent=state.transcript;
+}
 
-function correctAnswer(){return ALTERED[KEYS[state.keyIdx].name][TABLE[state.row][state.col]];}
-function checkAnswer(input){const n=input.trim();if(!n)return false;const c=correctAnswer();const eq=(a,b)=>a.toLowerCase()===b.toLowerCase();if(eq(n,c))return true;const alt=ENHARMONIC[c];if(alt&&eq(n,alt))return true;return false;}
+function startListening(){
+  if(!recog)recog=setupRecog();
+  if(!recog){state.micStatus="Microfono non supportato";updateMicUI();return;}
+  state.listening=true;state.transcript="";state.micStatus="In ascolto…";
+  updateMicUI();
+  try{recog.start();}catch(e){recog=setupRecog();try{recog&&recog.start();}catch(e2){}}
+}
 
-function submitVoice(text){const answer=normalizeVoice(text);const ok=checkAnswer(answer);const correct=correctAnswer();state.feedback=ok?"correct":"wrong";state.correctNote=correct;state.correct+=ok?1:0;state.total+=1;render();const msg=ok?"Esatto! "+speakable(correct):"Sbagliato. "+speakable(correct);speak(msg,()=>{advanceAndAsk();});}
-function submitText(){const inp=document.getElementById("ans");if(!inp)return;const answer=norm(inp.value.trim());if(!answer)return;const ok=checkAnswer(answer);const correct=correctAnswer();state.feedback=ok?"correct":"wrong";state.correctNote=correct;state.correct+=ok?1:0;state.total+=1;render();}
+function toggleMic(){
+  if(state.speaking)return;
+  if(state.listening){recog&&recog.stop();state.listening=false;state.micStatus="Premi per rispondere";updateMicUI();return;}
+  startListening();
+}
 
-function advanceAndAsk(){state.feedback=null;state.correctNote="";state.transcript="";const nc=state.col+1;if(nc>=20){const nr=state.row+1;if(nr>=12){state.finished=true;render();speak("Tavola completata! "+state.correct+" su "+state.total+" corretti.");return;}state.row=nr;state.col=0;}else{state.col=nc;}render();speak(IV_SPEAK[TABLE[state.row][state.col]],()=>{setTimeout(()=>startListening(),300);});}
-function nextManual(){state.feedback=null;state.correctNote="";state.transcript="";const nc=state.col+1;if(nc>=20){const nr=state.row+1;if(nr>=12){state.finished=true;render();return;}state.row=nr;state.col=0;}else{state.col=nc;}render();}
-function toggleRef(){state.showRef=!state.showRef;render();}
+// ── LOGICA SPECIFICA ALTERATI ────────────────────────────────────────────────
+function correctAnswer(){
+  return ALTERED[KEYS[state.keyIdx].name][TABLE[state.row][state.col]];
+}
+
+function checkAnswer(answer){
+  const correct=correctAnswer();
+  if(answer===correct)return true;
+  const alt=ENHARMONIC[correct];
+  if(alt&&answer===alt)return true;
+  return false;
+}
+
+function submitVoice(text){
+  const answer=normalizeVoice(text);
+  const correct=correctAnswer();
+  const ok=checkAnswer(answer);
+  state.feedback=ok?"correct":"wrong";
+  state.correctNote=correct;
+  state.correct+=ok?1:0;
+  state.total+=1;
+  render();
+  const msg=ok?"Esatto! "+speakable(correct):"Sbagliato. "+speakable(correct);
+  speak(msg,()=>{advanceAndAsk();});
+}
+
+function submitText(){
+  const inp=document.getElementById("ans");if(!inp)return;
+  const answer=norm(inp.value.trim());if(!answer)return;
+  const correct=correctAnswer();
+  const ok=checkAnswer(answer);
+  state.feedback=ok?"correct":"wrong";state.correctNote=correct;
+  state.correct+=ok?1:0;state.total+=1;render();
+}
+
+const KEY_WEIGHTS=[1,6,3,4,5,2,7,2,5,4,3,6];
+function weightedKey(exclude){
+  const total=KEY_WEIGHTS.reduce((a,b,i)=>i===exclude?a:a+b,0);
+  let r=Math.random()*total;
+  for(let i=0;i<12;i++){if(i===exclude)continue;r-=KEY_WEIGHTS[i];if(r<=0)return i;}
+  return exclude===11?0:11;
+}
+
+function advanceAndAsk(){
+  state.feedback=null;state.correctNote="";state.transcript="";
+  const nc=state.col+1;
+  if(nc>=20){
+    const nr=state.row+1;
+    if(nr>=12){state.finished=true;render();speak("Tavola completata! "+state.correct+" su "+state.total+" corretti.");return;}
+    state.row=nr;state.col=0;
+    if(nr%3===0){
+      const newKey=weightedKey(state.keyIdx);
+      state.keyIdx=newKey;
+      render();
+      speak("Nuova tonalità: "+speakable(KEYS[newKey].name)+". "+IV_SPEAK[TABLE[nr][0]],()=>{setTimeout(()=>startListening(),300);});
+      return;
+    }
+  }else{state.col=nc;}
+  render();
+  speak(IV_SPEAK[TABLE[state.row][state.col]],()=>{setTimeout(()=>startListening(),300);});
+}
+
+function nextManual(){
+  state.feedback=null;state.correctNote="";state.transcript="";
+  const nc=state.col+1;
+  if(nc>=20){const nr=state.row+1;if(nr>=12){state.finished=true;render();return;}else{state.row=nr;state.col=0;}}
+  else{state.col=nc;}
+  render();
+}
+
+function toggleScale(){state.showScale=!state.showScale;render();}
 function toggleMode(){state.voiceMode=!state.voiceMode;render();}
 
-function startSession(){state.started=true;state.keyIdx=Math.floor(Math.random()*12);render();speak("Tonalità "+speakable(KEYS[state.keyIdx].name)+". "+IV_SPEAK[TABLE[0][0]],()=>{setTimeout(()=>startListening(),300);});}
-function newSession(){if(recog)try{recog.stop();}catch(e){}state={started:true,keyIdx:Math.floor(Math.random()*12),row:0,col:0,feedback:null,correctNote:"",correct:0,total:0,finished:false,showRef:state.showRef,voiceMode:state.voiceMode,listening:false,speaking:false,transcript:"",micStatus:"Premi per rispondere"};render();speak("Tonalità "+speakable(KEYS[state.keyIdx].name)+". "+IV_SPEAK[TABLE[0][0]],()=>{setTimeout(()=>startListening(),300);});}
+function startSession(){
+  state.started=true;
+  state.keyIdx=weightedKey(-1);
+  render();
+  const key=KEYS[state.keyIdx];
+  speak("Tonalità "+speakable(key.name)+". "+IV_SPEAK[TABLE[0][0]],()=>{
+    setTimeout(()=>startListening(),300);
+  });
+}
+
+function newSession(){
+  if(recog)try{recog.stop();}catch(e){}
+  state={
+    started:true,
+    keyIdx:weightedKey(-1),
+    row:0,col:0,feedback:null,correctNote:"",
+    correct:0,total:0,finished:false,
+    showScale:state.showScale,voiceMode:state.voiceMode,
+    listening:false,speaking:false,transcript:"",micStatus:"In ascolto…"
+  };
+  render();
+  const key=KEYS[state.keyIdx];
+  speak("Tonalità "+speakable(key.name)+". "+IV_SPEAK[TABLE[0][0]],()=>{
+    setTimeout(()=>startListening(),300);
+  });
+}
 
 function render(){
-  const{started,keyIdx,row,col,feedback,correctNote,correct,total,finished,showRef,voiceMode}=state;
+  const{started,keyIdx,row,col,feedback,correctNote,correct,total,finished,showScale,voiceMode}=state;
   const app=document.getElementById("app");
-  if(!started){app.innerHTML=`<div class="start-screen"><div style="font-size:48px;margin-bottom:1rem">🎹</div><div class="start-title">Intervalli Alterati</div><div class="start-sub">Tonalità: <strong>${KEYS[state.keyIdx].name} maggiore</strong><br>L'app legge l'intervallo, tu rispondi a voce.</div><button class="start-btn" onclick="startSession()">▶ Inizia</button></div>`;return;}
-  if(finished){const pct=total>0?Math.round(correct/total*100):0;app.innerHTML=`<div class="done"><div class="done-emoji">🎹</div><h2>Tavola completata!</h2><p>${correct} / ${total} corretti &middot; ${pct}%</p><button onclick="newSession()">Nuova sessione &rarr;</button></div>`;return;}
-  const key=KEYS[keyIdx];const iv=TABLE[row][col];const pos=row*20+col+1;const pct=Math.round(pos/240*100);
-  const ivNum=iv.slice(0,-1);const ivAcc=iv.slice(-1);
+
+  if(!started){
+    app.innerHTML=`
+      <div class="start-screen">
+        <div style="font-size:48px;margin-bottom:1rem">🎹</div>
+        <div class="start-title">Intervalli Alterati</div>
+        <div class="start-sub">Tonalità: <strong>${KEYS[state.keyIdx].name} maggiore</strong><br>L'app legge l'intervallo, tu rispondi a voce.</div>
+        <button class="start-btn" onclick="startSession()">▶ Inizia</button>
+      </div>`;
+    return;
+  }
+
+  if(finished){
+    const pct2=total>0?Math.round(correct/total*100):0;
+    app.innerHTML=`<div class="done"><div class="done-emoji">🎹</div><h2>Tavola completata!</h2><p>${correct} / ${total} corretti &middot; ${pct2}%</p><button onclick="newSession()">Nuova sessione &rarr;</button></div>`;
+    return;
+  }
+
+  const key=KEYS[keyIdx];
+  const iv=TABLE[row][col];
+  const ivNum=iv.slice(0,-1);
+  const ivAcc=iv.slice(-1);
+  const pos=row*20+col+1;
+  const pct=Math.round(pos/240*100);
   const bigColor=feedback==="correct"?"var(--green-text)":feedback==="wrong"?"var(--red-text)":"var(--text)";
+
+  // Griglia di riferimento: 8 intervalli alterati della tonalità corrente
   const altNotes=ALTERED[key.name];
-  const refHtml=showRef?`<div class="ref-grid">${Object.entries(altNotes).map(([k,v])=>`<div class="ref-cell${k===iv?" active":""}"><div class="ref-deg">${k.replace('b','♭').replace('#','♯')}</div><div class="ref-note">${v}</div></div>`).join("")}</div>`:"";
+  const scaleHtml=showScale?`<div class="scale">${
+    Object.entries(altNotes).map(([k,v])=>`
+      <div class="scale-cell${k===iv?" active":""}">
+        <div class="scale-deg">${k.replace("b","♭").replace("#","♯")}</div>
+        <div class="scale-note">${v}</div>
+      </div>`).join("")
+  }</div>`:"";
+
   let inputHtml="";
   if(voiceMode){
-    let cls="mic-btn";if(state.listening)cls+=" listening";else if(state.speaking)cls+=" speaking";
-    inputHtml=`<div class="mic-area"><button class="${cls}" id="mic-btn" onclick="toggleMic()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/></svg></button><div class="mic-transcript" id="mic-transcript">${state.transcript}</div><div class="mic-status" id="mic-status">${state.speaking?"Sto parlando…":state.listening?"In ascolto…":state.micStatus}</div></div>`;
+    let cls="mic-btn";
+    if(state.listening)cls+=" listening";
+    else if(state.speaking)cls+=" speaking";
+    inputHtml=`
+      <div class="mic-area">
+        <button class="${cls}" id="mic-btn" onclick="toggleMic()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"/>
+            <path d="M5 10a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+            <line x1="9" y1="21" x2="15" y2="21"/>
+          </svg>
+        </button>
+        <div class="mic-transcript" id="mic-transcript">${state.transcript}</div>
+        <div class="mic-status" id="mic-status">${state.speaking?"Sto parlando…":state.listening?"In ascolto…":state.micStatus}</div>
+      </div>`;
     if(feedback){inputHtml+=`<div class="feedback ${feedback==="correct"?"ok":"ko"}"><div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div><div class="fb-sub">${feedback==="correct"?correctNote+" è corretto.":"La risposta corretta è <strong>"+correctNote+"</strong>."}</div></div>`;}
   }else{
-    if(!feedback){inputHtml=`<div class="input-row"><input id="ans" type="text" placeholder="es. Sol#, Mib, Fa…" autocomplete="off" autocorrect="off" spellcheck="false"/><button onclick="submitText()">Verifica</button></div>`;}
+    if(!feedback){inputHtml=`<div class="input-row"><input id="ans" type="text" placeholder="es. Sol#, Mib, Fa…" autocomplete="off" autocorrect="off" spellcheck="false"/><button onclick="submitText()">OK</button></div>`;}
     else{inputHtml=`<div class="feedback ${feedback==="correct"?"ok":"ko"}"><div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div><div class="fb-sub">${feedback==="correct"?correctNote+" è corretto.":"La risposta corretta è <strong>"+correctNote+"</strong>."}</div></div><button class="btn-full" onclick="nextManual()">Avanti &rarr;</button>`;}
   }
-  app.innerHTML=`<div class="header"><div><div class="label">Tonalità</div><div class="key-name">${key.name} maggiore</div></div><div><div class="label" style="text-align:right">Progresso</div><div class="prog">${pos} / 240</div></div></div><div class="progbar"><div class="progbar-fill" style="width:${pct}%"></div></div><button class="ref-toggle" onclick="toggleRef()">${showRef?"Nascondi intervalli":"Mostra intervalli"}</button>${refHtml}<div class="number-area"><div class="label">Intervallo</div><div class="big-iv" style="color:${bigColor}">${ivNum}<sup>${ivAcc==='b'?'♭':'♯'}</sup></div><div class="sub">Riga ${row+1} &middot; Col ${col+1}</div></div>${inputHtml}<div class="scores"><div class="score-card"><div class="label">Corretti</div><div class="score-val" style="color:var(--green-text)">${correct}</div></div><div class="score-card"><div class="label">Sbagliati</div><div class="score-val" style="color:var(--red-text)">${total-correct}</div></div><div class="score-card"><div class="label">% corretti</div><div class="score-val">${total>0?Math.round(correct/total*100)+"%":"—"}</div></div></div><div class="bottom-links"><button onclick="toggleMode()">${voiceMode?"Passa a tastiera":"Passa a microfono"}</button><button onclick="newSession()">Cambia tonalità</button></div>`;
+
+  app.innerHTML=`
+    <div class="header">
+      <div><div class="label">Tonalità</div><div class="key-name">${key.name} maggiore</div></div>
+      <div><div class="label" style="text-align:right">Progresso</div><div class="prog">${pos} / 240</div></div>
+    </div>
+    <div class="progbar"><div class="progbar-fill" style="width:${pct}%"></div></div>
+    <button class="scale-toggle" onclick="toggleScale()">${showScale?"Nascondi intervalli":"Mostra intervalli"}</button>
+    ${scaleHtml}
+    <div class="number-area">
+      <div class="label">Intervallo</div>
+      <div class="big-number" style="color:${bigColor}">${ivNum}<sup>${ivAcc==="b"?"♭":"♯"}</sup></div>
+      <div class="sub">Riga ${row+1} &middot; Col ${col+1}</div>
+    </div>
+    ${inputHtml}
+    <div class="scores">
+      <div class="score-card"><div class="label">Corretti</div><div class="score-val" style="color:var(--green-text)">${correct}</div></div>
+      <div class="score-card"><div class="label">Sbagliati</div><div class="score-val" style="color:var(--red-text)">${total-correct}</div></div>
+      <div class="score-card"><div class="label">% corretti</div><div class="score-val">${total>0?Math.round(correct/total*100)+"%":"—"}</div></div>
+    </div>
+    <div class="bottom-links">
+      <button onclick="toggleMode()">${voiceMode?"Passa a tastiera":"Passa a microfono"}</button>
+      <button onclick="newSession()">Cambia tonalità</button>
+    </div>`;
+
   if(!voiceMode&&!feedback){const inp=document.getElementById("ans");if(inp){inp.focus();inp.addEventListener("keydown",e=>{if(e.key==="Enter")submitText();});}}
 }
+
 render();
 </script>
 </body>
