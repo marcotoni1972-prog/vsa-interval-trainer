@@ -68,6 +68,10 @@
     .score-val{font-size:20px;font-weight:500}
     .bottom-links{display:flex;justify-content:space-between;margin-top:.75rem}
     .bottom-links button{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:0}
+    .note-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+    .note-btn{font-size:15px;font-weight:500;padding:12px 6px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+    .note-btn:hover{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue-text)}
+    .note-btn:active{transform:scale(.95)}
     .done{text-align:center;padding:3rem 1rem}
     .done-emoji{font-size:48px;margin-bottom:.75rem}
     .done h2{font-size:22px;font-weight:500;margin-bottom:.5rem}
@@ -219,6 +223,13 @@ function submitVoice(text){
   });
 }
 
+function submitNote(note){
+  const correct=KEYS[state.keyIdx].notes[TABLE[state.row][state.col]-1];
+  const ok=note===correct;
+  state.feedback=ok?"correct":"wrong";state.correctNote=correct;
+  state.correct+=ok?1:0;state.total+=1;render();
+}
+
 function submitText(){
   const inp=document.getElementById("ans");if(!inp)return;
   const answer=norm(inp.value.trim());if(!answer)return;
@@ -296,6 +307,22 @@ function newSession(){
   speak("Tonalità "+speakable(key.name)+". Grado "+TABLE[0][0],()=>{
     setTimeout(()=>startListening(),300);
   });
+}
+
+// Costruisce i bottoni: 7 note della tonalità + 5 "intrusi" da altre scale
+function buildButtons(keyIdx, correctNote){
+  const correct = KEYS[keyIdx].notes;
+  // tutte le note possibili da tutte le scale
+  const pool = new Set();
+  KEYS.forEach((k,i)=>{ if(i!==keyIdx) k.notes.forEach(n=>pool.add(n)); });
+  // rimuovi note già presenti nella scala corrente
+  correct.forEach(n=>pool.delete(n));
+  const extras = Array.from(pool);
+  // pesca 5 intrusi casuali
+  const shuffled = extras.sort(()=>Math.random()-.5).slice(0,5);
+  // unisci e mischia
+  const all = [...correct, ...shuffled].sort(()=>Math.random()-.5);
+  return all;
 }
 
 function togglePause(){
