@@ -69,6 +69,10 @@
     .score-val{font-size:20px;font-weight:500}
     .bottom-links{display:flex;justify-content:space-between;margin-top:.75rem}
     .bottom-links button{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:0}
+    .note-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+    .note-btn{font-size:15px;font-weight:500;padding:12px 6px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+    .note-btn:hover{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue-text)}
+    .note-btn:active{transform:scale(.95)}
     .done{text-align:center;padding:3rem 1rem}
     .done-emoji{font-size:48px;margin-bottom:.75rem}
     .done h2{font-size:22px;font-weight:500;margin-bottom:.5rem}
@@ -298,6 +302,28 @@ function submitVoice(text){
   speak(msg,()=>{advanceAndAsk();});
 }
 
+// Tutte le note possibili (naturali + alterate) per la griglia
+const ALL_NOTES=["Do","Re","Mi","Fa","Sol","La","Si","Reb","Mib","Solb","Lab","Sib","Dob","Fab","Do#","Re#","Fa#","Sol#","La#","Mi#","Si#"];
+
+function buildButtons(keyIdx, correctNote){
+  const correct=KEYS[keyIdx].notes;
+  // note alterate della tonalità corrente
+  const alteredVals=Object.values(ALTERED[KEYS[keyIdx].name]||{});
+  const ownNotes=new Set([...correct,...alteredVals]);
+  // intrusi: note da altre scale non presenti nella tonalità corrente
+  const pool=ALL_NOTES.filter(n=>!ownNotes.has(n));
+  const extras=pool.sort(()=>Math.random()-.5).slice(0,4);
+  // unisci note proprie + intrusi e mischia
+  return [...ownNotes,...extras].sort(()=>Math.random()-.5);
+}
+
+function submitNote(note){
+  const correct=state.currentAnswer;
+  const ok=note===correct;
+  state.feedback=ok?"correct":"wrong";state.correctNote=correct;
+  state.correct+=ok?1:0;state.total+=1;render();
+}
+
 function submitText(){
   const inp=document.getElementById("ans");if(!inp)return;
   const answer=norm(inp.value.trim());if(!answer)return;
@@ -447,8 +473,12 @@ function render(){
       </div>`;
     if(feedback){inputHtml+=`<div class="feedback ${feedback==="correct"?"ok":"ko"}"><div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div><div class="fb-sub">${feedback==="correct"?correctNote+" è corretto.":"La risposta corretta è <strong>"+correctNote+"</strong>."}</div></div>`;}
   }else{
-    if(!feedback){inputHtml=`<div class="input-row"><input id="ans" type="text" placeholder="es. Sol#, Mib, Fa…" autocomplete="off" autocorrect="off" spellcheck="false"/><button onclick="submitText()">OK</button></div>`;}
-    else{inputHtml=`<div class="feedback ${feedback==="correct"?"ok":"ko"}"><div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div><div class="fb-sub">${feedback==="correct"?correctNote+" è corretto.":"La risposta corretta è <strong>"+correctNote+"</strong>."}</div></div><button class="btn-full" onclick="nextManual()">Avanti &rarr;</button>`;}
+    if(!feedback){
+      const btns=buildButtons(keyIdx,null);
+      inputHtml=`<div class="note-grid">${btns.map(n=>`<button class="note-btn" onclick="submitNote('${n}')">${n}</button>`).join("")}</div>`;
+    } else {
+      inputHtml=`<div class="feedback ${feedback==="correct"?"ok":"ko"}"><div class="fb-title ${feedback==="correct"?"ok":"ko"}">${feedback==="correct"?"Esatto! ✓":"Sbagliato ✗"}</div><div class="fb-sub">${feedback==="correct"?correctNote+" è corretto.":"La risposta corretta è <strong>"+correctNote+"</strong>."}</div></div><button class="btn-full" onclick="nextManual()">Avanti &rarr;</button>`;
+    }
   }
 
   app.innerHTML=`
