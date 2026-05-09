@@ -149,7 +149,7 @@ const IV_SPEAK={
 };
 
 // ── CODICE IDENTICO ALLA APP NATURALI (da qui in poi) ───────────────────────
-const ALIASES={"do":"Do","dò":"Do","dó":"Do","re":"Re","ré":"Re","rè":"Re","mi":"Mi","mì":"Mi","fa":"Fa","fà":"Fa","sol":"Sol","so":"Sol","la":"La","là":"La","si":"Si","sì":"Si","reb":"Reb","re bemolle":"Reb","mib":"Mib","mi bemolle":"Mib","solb":"Solb","sol bemolle":"Solb","lab":"Lab","la bemolle":"Lab","sib":"Sib","si bemolle":"Sib","dob":"Dob","do bemolle":"Dob","fab":"Fab","fa bemolle":"Fab","fa#":"Fa#","fa diesis":"Fa#","do#":"Do#","do diesis":"Do#","sol#":"Sol#","sol diesis":"Sol#","re#":"Re#","re diesis":"Re#","la#":"La#","la diesis":"La#","mi#":"Mi#","mi diesis":"Mi#","si#":"Si#","si diesis":"Si#","do musicale":"Do","re musicale":"Re","mi musicale":"Mi","fa musicale":"Fa","sol musicale":"Sol","la musicale":"La","si musicale":"Si","do nota":"Do","re nota":"Re","mi nota":"Mi","fa nota":"Fa","sol nota":"Sol","la nota":"La","si nota":"Si"};
+const ALIASES={"do":"Do","dò":"Do","dó":"Do","re":"Re","ré":"Re","rè":"Re","mi":"Mi","mì":"Mi","fa":"Fa","fà":"Fa","sol":"Sol","so":"Sol","la":"La","là":"La","si":"Si","sì":"Si","reb":"Reb","re bemolle":"Reb","mib":"Mib","mi bemolle":"Mib","solb":"Solb","sol bemolle":"Solb","lab":"Lab","la bemolle":"Lab","sib":"Sib","si bemolle":"Sib","dob":"Dob","do bemolle":"Dob","fab":"Fab","fa bemolle":"Fab","fa#":"Fa#","fa diesis":"Fa#","do#":"Do#","do diesis":"Do#","sol#":"Sol#","sol diesis":"Sol#","re#":"Re#","re diesis":"Re#","la#":"La#","la diesis":"La#","mi#":"Mi#","mi diesis":"Mi#","si#":"Si#","si diesis":"Si#","do musicale":"Do","re musicale":"Re","mi musicale":"Mi","fa musicale":"Fa","sol musicale":"Sol","la musicale":"La","si musicale":"Si","do nota":"Do","re nota":"Re","mi nota":"Mi","fa nota":"Fa","sol nota":"Sol","la nota":"La","si nota":"Si","soul":"Sol","souls":"Sol","soul nota":"Sol","fah":"Fa","lah":"La"};
 
 function speakable(text){
   return text
@@ -162,7 +162,37 @@ function speakable(text){
     .replace(/Fab/g,"Fa bemolle").replace(/Fa#/g,"Fa diesis");
 }
 
-function normalizeVoice(s){if(!s)return"";const clean=s.trim().toLowerCase().replace(/[.,!?;:]/g,"");if(ALIASES[clean])return ALIASES[clean];const first=clean.split(" ")[0];if(ALIASES[first])return ALIASES[first];const second=clean.split(" ")[1]||"";if(ALIASES[second])return ALIASES[second];return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
+function normalizeVoice(s){
+  if(!s)return"";
+  const clean=s.trim().toLowerCase().replace(/[.,!?;:']/g,"");
+  const fixed=clean
+    .replace(/\bsoul\b/g,"sol")
+    .replace(/\bsouls\b/g,"sol")
+    .replace(/\bfah\b/g,"fa")
+    .replace(/\blah\b/g,"la");
+  if(ALIASES[fixed])return ALIASES[fixed];
+  const parts=fixed.split(" ");
+  const twoWords=parts.slice(0,2).join(" ");
+  if(ALIASES[twoWords])return ALIASES[twoWords];
+  const first=parts[0];
+  if(ALIASES[first])return ALIASES[first];
+  const second=parts[1]||"";
+  if(ALIASES[second])return ALIASES[second];
+  const prefixes=[
+    ["solb","Solb"],["sol","Sol"],["soul","Sol"],
+    ["reb","Reb"],["re","Re"],
+    ["mib","Mib"],["mi","Mi"],
+    ["lab","Lab"],["la","La"],
+    ["sib","Sib"],["si","Si"],
+    ["dob","Dob"],["do","Do"],
+    ["fab","Fab"],["fa#","Fa#"],["fa","Fa"],
+  ];
+  for(const [pfx,note] of prefixes){
+    if(fixed.startsWith(pfx))return note;
+    for(const w of parts){if(w.startsWith(pfx))return note;}
+  }
+  return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();
+}
 function norm(s){if(!s)return"";return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
 
 let state={
