@@ -113,20 +113,41 @@ function speakable(text){
 function normalizeVoice(s){
   if(!s)return"";
   const clean=s.trim().toLowerCase().replace(/[.,!?;:']/g,"");
-  // correggi errori tipici del riconoscimento
+  // correzioni fonetiche note
   const fixed=clean
     .replace(/\bsoul\b/g,"sol")
+    .replace(/\bsouls\b/g,"sol")
     .replace(/\bfah\b/g,"fa")
     .replace(/\blah\b/g,"la");
   if(ALIASES[fixed])return ALIASES[fixed];
-  // prova "prima seconda" (es. "fa nota", "sol bemolle")
   const parts=fixed.split(" ");
+  // prova due parole (es. "fa nota", "sol bemolle")
   const twoWords=parts.slice(0,2).join(" ");
   if(ALIASES[twoWords])return ALIASES[twoWords];
+  // prova prima parola
   const first=parts[0];
   if(ALIASES[first])return ALIASES[first];
+  // prova seconda parola
   const second=parts[1]||"";
   if(ALIASES[second])return ALIASES[second];
+  // PREFIX MATCHING: "renata"→Re, "solamente"→Sol, "soul..."→Sol
+  // ordine importante: prima le più lunghe per evitare falsi match
+  const prefixes=[
+    ["solb","Solb"],["sol","Sol"],["soul","Sol"],
+    ["reb","Reb"],["re","Re"],
+    ["mib","Mib"],["mi","Mi"],
+    ["lab","Lab"],["la","La"],
+    ["sib","Sib"],["si","Si"],
+    ["dob","Dob"],["do","Do"],
+    ["fa#","Fa#"],["fa","Fa"],
+  ];
+  for(const [pfx,note] of prefixes){
+    if(fixed.startsWith(pfx)) return note;
+    // controlla anche ogni parola
+    for(const w of parts){
+      if(w.startsWith(pfx)) return note;
+    }
+  }
   return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();
 }
 function norm(s){if(!s)return"";return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();}
